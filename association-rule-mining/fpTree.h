@@ -18,4 +18,5 @@ struct frequencyItem {
 void addToHeaderTable(struct frequencyItem*, char*);
 struct frequencyItem* sortHeaderTable(struct frequencyItem*, int);
 struct frequencyItem* concatStruct(struct frequencyItem*, struct frequencyItem*);
+
 #endif

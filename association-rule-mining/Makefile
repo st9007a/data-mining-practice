@@ -7,3 +7,6 @@ all: ./do
 
 run:
 	./do
+
+clean:
+	rm -f ./do

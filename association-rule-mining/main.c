@@ -1,14 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "fpTree.c"
 
 int main(int argc, char** argv) {
 
+
+
+  return 0;
   float minSup;
   float minConf;
+
   FILE* record;
   char* line;
   size_t len = 0;
   ssize_t read;
+
+  struct frequencyItem* headerTable;
 
   printf("Input your minimum support : ");
   scanf("%f", &minSup);
@@ -24,7 +31,8 @@ int main(int argc, char** argv) {
   }
 
   while ((read = getline(&line, &len, record)) != -1) {
-    //parse to array
-    
+
   }
+
+  return 0:
 }

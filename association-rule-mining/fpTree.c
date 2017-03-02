@@ -2,17 +2,18 @@
 #include <stdlib.h>
 #include <string.h>
 #include "fpTree.h"
+#include "array.c"
 
-void addToHeaderTable(struct frequencyItem* headerTable, char* line) {
+void addToHeaderTable(struct array* headerTable, char* line) {
   char* token = " ";
   char* item;
 
   for(item = strtok(line, token); item != NULL; item = strtok(NULL, token)) {
     int i;
     int flag = 0;
-    for(i=0; (headerTable + i) != NULL; i++) {
-      if(strcmp((headerTable + i)->item, item) == 0) {
-        (headerTable + i)->frequency++;
+    for(i=0; i<headerTable->size; i++) {
+      if(strcmp(headerTable->array[i]->item, item) == 0) {
+        headerTable->array[i]->frequency++;
         flag++;
         break;
       }
@@ -21,19 +22,22 @@ void addToHeaderTable(struct frequencyItem* headerTable, char* line) {
       struct frequencyItem f;
       f.frequency = 1;
       f.item = item;
-      *(headerTable + i) = f;
+      push(headerTable, f);
     }
   }
 }
 
-struct frequencyItem* concatStruct(struct frequencyItem* arr1, struct frequencyItem* arr2) {
-  struct frequencyItem* arr;
+struct array* concatStruct(struct array* arr1, struct array* arr2) {
+  struct array* arr;
   int i, j;
-  for(i = 0; (arr1 + i) != NULL; i++) {
-    *(arr + i) = *(arr1 + i);
+
+  newArray(arr, arr1->used + arr2->used);
+
+  for(i = 0; i < arr1->used; i++) {
+    push(arr, *(arr1->array[i]));
   }
-  for(j = 0; (arr2 + j) != NULL; j++) {
-    *(arr + j + i) = *(arr2 + j);
+  for(j = 0; j < arr2->used; j++) {
+    push(arr, *(arr2->array[j]));
   }
   return arr;
 }

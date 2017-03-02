@@ -3,7 +3,7 @@
 
 struct fpTree {
   char* item;
-  int count;
+  size_t count;
   struct fpTree* parent;
   struct fpTree* children;
   struct fpTree* link;
@@ -11,7 +11,7 @@ struct fpTree {
 
 struct frequencyItem {
   char* item;
-  int frequency;
+  size_t frequency;
   struct fpTree* link;
 };
 

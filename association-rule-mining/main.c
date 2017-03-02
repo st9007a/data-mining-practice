@@ -4,12 +4,6 @@
 
 int main(int argc, char** argv) {
 
-  int* a;
-
-  *(a+1) = 3;
-
-  printf("%d\n", a[1]);
-
   //struct frequencyItem* header = malloc(sizeof(struct frequencyItem) * 3);
   //header[0].frequency = 3;
   //header[1].frequency = 10;

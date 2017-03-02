@@ -1,8 +1,6 @@
 CC=gcc
 
-all: ./do
-
-./do:
+all:
 	$(CC) ./main.c -o do
 
 run:

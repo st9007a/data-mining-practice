@@ -4,13 +4,22 @@
 
 int main(int argc, char** argv) {
 
-  //struct frequencyItem* header = malloc(sizeof(struct frequencyItem) * 3);
-  //header[0].frequency = 3;
-  //header[1].frequency = 10;
-  //header[2].frequency = 0;
+  struct array arr;
+  struct frequencyItem f1;
+  struct frequencyItem f2;
+  struct frequencyItem f3;
+  newArray(&arr, 3);
+  f1.item = "123";
+  f2.item = "456";
+  f3.item = "789";
+  push(&arr, f1);
+  push(&arr, f2);
+  push(&arr, f3);
 
-  //sortHeaderTable(header, 3);
-
+  int i;
+  for(i=0;i<arr.used;i++) {
+    printf("%s\n", arr.items[i].item);
+  }
 
   return 0;
 

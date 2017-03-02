@@ -11,5 +11,7 @@ struct array {
 
 void newArray(struct array*, size_t);
 void push(struct array*, struct frequencyItem);
+struct array concat(struct array, struct array);
+struct array quickSort(struct array);
 
 #endif

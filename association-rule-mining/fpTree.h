@@ -18,7 +18,5 @@ struct frequencyItem {
 };
 
 void addToHeaderTable(struct array*, char*);
-struct array sortHeaderTable(struct array);
-struct array concatStruct(struct array, struct array);
 
 #endif

@@ -7,9 +7,9 @@ struct array {
   size_t size;
   size_t used;
   struct frequencyItem* items;
-}
+};
 
-void newArray(array*, size_t);
-void push(array*, struct frequencyItem);
+void newArray(struct array*, size_t);
+void push(struct array*, struct frequencyItem);
 
 #endif

@@ -11,9 +11,9 @@ void addToHeaderTable(struct array* headerTable, char* line) {
   for(item = strtok(line, token); item != NULL; item = strtok(NULL, token)) {
     int i;
     int flag = 0;
-    for(i=0; i<headerTable->size; i++) {
-      if(strcmp(headerTable->array[i]->item, item) == 0) {
-        headerTable->array[i]->frequency++;
+    for(i=0; i<headerTable->used; i++) {
+      if(strcmp(headerTable->items[i].item, item) == 0) {
+        headerTable->items[i].frequency++;
         flag++;
         break;
       }
@@ -27,38 +27,39 @@ void addToHeaderTable(struct array* headerTable, char* line) {
   }
 }
 
-struct array* concatStruct(struct array* arr1, struct array* arr2) {
-  struct array* arr;
+struct array concatStruct(struct array arr1, struct array arr2) {
+  struct array arr;
   int i, j;
 
-  newArray(arr, arr1->used + arr2->used);
+  newArray(&arr, arr1.used + arr2.used);
 
-  for(i = 0; i < arr1->used; i++) {
-    push(arr, *(arr1->array[i]));
+  for(i = 0; i < arr1.used; i++) {
+    push(&arr, arr1.items[i]);
   }
-  for(j = 0; j < arr2->used; j++) {
-    push(arr, *(arr2->array[j]));
+  for(j = 0; j < arr2.used; j++) {
+    push(&arr, arr2.items[j]);
   }
   return arr;
 }
 
-struct frequencyItem* sortHeaderTable(struct frequencyItem* headerTable, int len) {
-  struct frequencyItem* less;
-  struct frequencyItem* greater;
-  if(len == 0) {
+struct array sortHeaderTable(struct array headerTable) {
+  struct array less;
+  struct array greater;
+  if(headerTable.used == 0) {
     return headerTable;
   }
   else {
-    struct frequencyItem* pivot = headerTable + len - 1;
+    struct frequencyItem pivot = headerTable.items[headerTable.used - 1];
     int i;
-    for(i = 0; i < len; i++) {
-      if((headerTable + i)->frequency < pivot->frequency) {
-        *(less + 1) = *(headerTable + i);
+    for(i = 0; i < headerTable.used; i++) {
+      if(headerTable.items[i].frequency < pivot.frequency) {
+        push(&less, headerTable.items[i]);
       }
       else {
-        *(greater + 1) = *(headerTable + i);
+        push(&greater, headerTable.items[i]);
       }
     }
-    return concatStruct(concatStruct(less, pivot), greater);
+    push(&less, pivot);
+    return concatStruct(less, greater);
   }
 }

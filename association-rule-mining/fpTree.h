@@ -1,6 +1,8 @@
 #ifndef FPTREE
 #define FPTREE
 
+#include "array.h"
+
 struct fpTree {
   char* item;
   size_t count;
@@ -15,8 +17,8 @@ struct frequencyItem {
   struct fpTree* link;
 };
 
-void addToHeaderTable(struct frequencyItem*, char*);
-struct frequencyItem* sortHeaderTable(struct frequencyItem*, int);
-struct frequencyItem* concatStruct(struct frequencyItem*, struct frequencyItem*);
+void addToHeaderTable(struct array*, char*);
+struct array sortHeaderTable(struct array);
+struct array concatStruct(struct array, struct array);
 
 #endif

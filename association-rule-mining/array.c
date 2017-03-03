@@ -32,13 +32,15 @@ struct array concat(struct array arr1, struct array arr2) {
 struct array quickSort(struct array headerTable) {
   struct array less;
   struct array greater;
+  newArray(&less, 1);
+  newArray(&greater, 1);
   if(headerTable.used == 0) {
     return headerTable;
   }
   else {
     struct frequencyItem pivot = headerTable.items[headerTable.used - 1];
     int i;
-    for(i = 0; i < headerTable.used; i++) {
+    for(i = 0; i < headerTable.used - 1; i++) {
       if(headerTable.items[i].frequency < pivot.frequency) {
         push(&less, headerTable.items[i]);
       }
@@ -46,7 +48,8 @@ struct array quickSort(struct array headerTable) {
         push(&greater, headerTable.items[i]);
       }
     }
+    less = quickSort(less);
     push(&less, pivot);
-    return concat(less, greater);
+    return concat(less, quickSort(greater));
   }
 }

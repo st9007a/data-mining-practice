@@ -14,6 +14,7 @@ int main(int argc, char** argv) {
   size_t len = 0;
   ssize_t read;
 
+  int i;
   struct array headerTable;
 
   printf("Input your minimum support(0 ~ 1) : ");
@@ -41,6 +42,14 @@ int main(int argc, char** argv) {
   headerTable = quickSort(headerTable);
 
   printf("remove item less than minimum support\n");
+  for (i = 0; i < headerTable.used; i++) {
+    if (headerTable.items[i].frequency >= countOfMinSup) {
+      removeMultiItems(&headerTable, 0, i - 1);
+      break;
+    }
+  }
+
+  printf("%lu\n", headerTable.used);
 
   return 0;
 }

@@ -33,8 +33,11 @@ void removeMultiItems(struct array* arr, size_t from, size_t to) {
 
   size_t i;
   for (i = from; i <= to; i++) {
-    arr->items[i] = arr->items[i + to - from + 1];
+    if (i + to - from + 1 < arr->used) {
+      arr->items[i] = arr->items[i + to - from + 1];
+    }
   }
+  //! free unused items
   arr->used -= to - from + 1;
 }
 

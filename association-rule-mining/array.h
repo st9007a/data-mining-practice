@@ -11,6 +11,7 @@ struct array {
 
 void newArray(struct array*, size_t);
 void push(struct array*, struct frequencyItem);
+void removeAt(struct array*, size_t);
 struct array concat(struct array, struct array);
 struct array quickSort(struct array);
 

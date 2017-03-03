@@ -14,6 +14,18 @@ void push(struct array* arr, struct frequencyItem element) {
   arr->items[arr->used++] = element;
 }
 
+void removeAt(struct array* arr, size_t index) {
+  if (index < 0 || index >= arr->used) {
+    return;
+  }
+
+  size_t i;
+  for (i = index; i < arr->used; i++) {
+    arr->items[i] = arr->items[i + 1];
+  }
+  arr->used--;
+}
+
 struct array concat(struct array arr1, struct array arr2) {
   struct array arr;
   int i, j;

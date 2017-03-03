@@ -1,7 +1,7 @@
 CC=gcc
 
 all:
-	$(CC) ./main.c -o do
+	$(CC) -o do ./main.c -lm
 	$(CC) ./test.c -o debug
 
 run:

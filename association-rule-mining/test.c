@@ -4,6 +4,33 @@
 
 int main(int argc, char** argv) {
 
+  //remove
+  struct array ra;
+  newArray(&ra, 1);
+  struct frequencyItem r1;
+  struct frequencyItem r2;
+  struct frequencyItem r3;
+  struct frequencyItem r4;
+
+  r1.item = "1";
+  r2.item = "2";
+  r3.item = "3";
+  r4.item = "4";
+
+  push(&ra, r1);
+  push(&ra, r2);
+  push(&ra, r3);
+  push(&ra, r4);
+
+  removeAt(&ra, 1);
+
+  int r;
+  for (r = 0;r < ra.used; r++) {
+    printf("%s\n", ra.items[r].item);
+  }
+
+  return 0;
+
   // add to header table test
   struct array ht;
   newArray(&ht, 1);

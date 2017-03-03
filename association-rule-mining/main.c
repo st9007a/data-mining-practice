@@ -1,3 +1,4 @@
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "fpTree.c"
@@ -6,6 +7,7 @@ int main(int argc, char** argv) {
 
   float minSup;
   float minConf;
+  int countOfMinSup;
 
   FILE* record;
   char* line;
@@ -14,10 +16,10 @@ int main(int argc, char** argv) {
 
   struct array headerTable;
 
-  printf("Input your minimum support : ");
+  printf("Input your minimum support(0 ~ 1) : ");
   scanf("%f", &minSup);
 
-  printf("Input your minimum confidence : ");
+  printf("Input your minimum confidence(0 ~ 1) : ");
   scanf("%f", &minConf);
 
   record = fopen("input.txt", "r");
@@ -33,15 +35,14 @@ int main(int argc, char** argv) {
     line[strlen(line) - 1] = '\0';
     addToHeaderTable(&headerTable, line);
   }
+  countOfMinSup = ceil(minSup * headerTable.used);
+  printf("%d\n", countOfMinSup);
+  printf("%d\n", headerTable.used);
 
   printf("sort header table\n");
   headerTable = quickSort(headerTable);
 
-  printf("print result\n");
-  int i;
-  for (i = 0; i < headerTable.used; i++) {
-    printf("item: %s, count: %lu\n", headerTable.items[i].item, headerTable.items[i].frequency);
-  }
+  printf("remove item less than minimum support\n");
 
   return 0;
 }

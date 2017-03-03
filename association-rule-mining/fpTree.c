@@ -7,17 +7,16 @@
 void addToHeaderTable(struct array* headerTable, char* line) {
   char* token = " ";
   char* item;
-  char cp[256];
+  char* cp = malloc(strlen(line) + 1);
 
   strcpy(cp, line);
   item = strtok(cp, token);
 
   while (item != NULL) {
-    char* el = malloc(strlen(item) + 1);
     int i;
     int flag = 0;
+    char* el = malloc(strlen(item));
     strcpy(el, item);
-
     for (i = 0; i < headerTable->used; i++) {
       if (strcmp(headerTable->items[i].item, el) == 0) {
         headerTable->items[i].frequency++;

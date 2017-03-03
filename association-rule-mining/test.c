@@ -10,7 +10,7 @@ int main(int argc, char** argv) {
   addToHeaderTable(&ht, "1 2 1 4");
   addToHeaderTable(&ht, "1 3 4 6");
   addToHeaderTable(&ht, "2 1 3 5");
-  addToHeaderTable(&ht, "1 3 1 1");
+  addToHeaderTable(&ht, "10 3 1 1");
   addToHeaderTable(&ht, "3 2 2 6");
 
   int j;

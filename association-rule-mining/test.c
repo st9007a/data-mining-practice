@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
   push(&ra, r3);
   push(&ra, r4);
 
-  removeAt(&ra, 1);
+  removeMultiItems(&ra, 1, 2);
 
   int r;
   for (r = 0;r < ra.used; r++) {

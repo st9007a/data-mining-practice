@@ -36,8 +36,6 @@ int main(int argc, char** argv) {
     addToHeaderTable(&headerTable, line);
   }
   countOfMinSup = ceil(minSup * headerTable.used);
-  printf("%d\n", countOfMinSup);
-  printf("%d\n", headerTable.used);
 
   printf("sort header table\n");
   headerTable = quickSort(headerTable);

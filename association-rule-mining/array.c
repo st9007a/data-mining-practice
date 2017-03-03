@@ -26,6 +26,18 @@ void removeAt(struct array* arr, size_t index) {
   arr->used--;
 }
 
+void removeMultiItems(struct array* arr, size_t from, size_t to) {
+  if (from < 0 || from >= arr->used || to < 0 || to >= arr->used || to < from) {
+    return;
+  }
+
+  size_t i;
+  for (i = from; i <= to; i++) {
+    arr->items[i] = arr->items[i + to - from + 1];
+  }
+  arr->used -= to - from + 1;
+}
+
 struct array concat(struct array arr1, struct array arr2) {
   struct array arr;
   int i, j;

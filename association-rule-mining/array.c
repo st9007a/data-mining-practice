@@ -37,8 +37,9 @@ void removeMultiItems(struct array* arr, size_t from, size_t to) {
       arr->items[i] = arr->items[i + to - from + 1];
     }
   }
-  //! free unused items
   arr->used -= to - from + 1;
+  arr->items = realloc(arr->items, sizeof(struct frequencyItem) * arr->used);
+  arr->size = arr->used;
 }
 
 struct array concat(struct array arr1, struct array arr2) {

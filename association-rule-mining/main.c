@@ -16,6 +16,7 @@ int main(int argc, char** argv) {
 
   int i;
   struct array headerTable;
+  struct fpTree root;
 
   printf("Input your minimum support(0 ~ 1) : ");
   scanf("%f", &minSup);
@@ -49,7 +50,12 @@ int main(int argc, char** argv) {
     }
   }
 
-  printf("%lu\n", headerTable.used);
+  printf("Rescanf input.txt to build fp tree\n");
+
+  fseek(record, 0, SEEK_SET);
+  while ((read = getline(&line, &len, record)) != -1) {
+    line[strlen(line) - 1] = '\0';
+  }
 
   return 0;
 }

@@ -6,6 +6,8 @@
 struct fpTree {
   char* item;
   size_t count;
+  size_t childrenLen;
+  size_t childrenSize;
   struct fpTree* parent;
   struct fpTree* children;
   struct fpTree* link;
@@ -18,5 +20,8 @@ struct frequencyItem {
 };
 
 void addToHeaderTable(struct array*, char*);
+void removeNotSupportItems(struct array*, char*, char**, int*);
+void sortList(struct array*, char**, int);
+void insertToFPTree(struct fpTree*, char**, int);
 
 #endif

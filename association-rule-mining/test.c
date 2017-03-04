@@ -4,6 +4,23 @@
 
 int main(int argc, char** argv) {
 
+  //logic
+  int a1 = 4;
+  int b1 = 6;
+  printf("%d\n", a1|b1);
+  return 0;
+
+  //change test
+  char* a = "111";
+  char* b = "222";
+  char* tmp;
+
+  tmp = a;
+  a = b;
+  b = tmp;
+  printf("a : %s, b : %s\n", a, b);
+  return 0;
+
   //remove
   struct array ra;
   newArray(&ra, 1);

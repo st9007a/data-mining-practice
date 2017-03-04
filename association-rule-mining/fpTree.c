@@ -74,7 +74,19 @@ void sortList(struct array* headerTable, char** list, int listLen) {
   }
 }
 
-void insertToFPTree(struct fpTree* rootNode, char** list, int listLen) {
+void buildLink(struct array* headerTable, struct fpTree* node) {
+  int i;
+  for (i = 0; i < headerTable->used; i++) {
+    if (strcmp(headerTable->items[i].item, node->item) == 0) {
+      struct fpTree* linkTo = headerTable->items[i].link;
+      while (linkTo != NULL) { linkTo = linkTo->link; }
+      linkTo = node;
+      break;
+    }
+  }
+}
+
+void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** list, int listLen) {
   int i;
   struct fpTree* node = rootNode;
   for (i = 0; i < listLen; i++) {
@@ -101,10 +113,10 @@ void insertToFPTree(struct fpTree* rootNode, char** list, int listLen) {
       child.item = list[i];
       child.count = 1;
       child.parent = node;
+      buildLink(headerTable, &child);
       node->children[node->childrenLen++] = child;
       pos = node->childrenLen - 1;
     }
     node = &node->children[pos];
-    //handle link
   }
 }

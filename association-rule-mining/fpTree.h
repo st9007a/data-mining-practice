@@ -22,6 +22,6 @@ struct frequencyItem {
 void addToHeaderTable(struct array*, char*);
 void removeNotSupportItems(struct array*, char*, char**, int*);
 void sortList(struct array*, char**, int);
-void insertToFPTree(struct fpTree*, char**, int);
+void insertToFPTree(struct array*, struct fpTree*, char**, int);
 
 #endif

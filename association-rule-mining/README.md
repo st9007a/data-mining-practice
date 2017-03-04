@@ -2,7 +2,7 @@
 
 ## Description
 
-FP tree algorithm implementation
+FP tree algorithm implementation by c language
 
 ## Environment
 

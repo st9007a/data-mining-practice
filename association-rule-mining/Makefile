@@ -12,3 +12,10 @@ clean:
 
 try:
 	./debug
+
+test:
+	mv input.txt input.txt.orig
+	mv input.txt.test input.txt
+	./do
+	mv input.txt input.txt.test
+	mv input.txt.orig input.txt

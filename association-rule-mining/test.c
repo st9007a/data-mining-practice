@@ -4,6 +4,12 @@
 
 int main(int argc, char** argv) {
 
+  //null pointer
+  char** list = NULL;
+  printf("%d\n", (list[0]==NULL));
+
+  return 0;
+
   //reference test
   struct fpTree ft = {"a", 1, 0 ,0};
   struct fpTree fr = ft;

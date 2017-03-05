@@ -21,13 +21,13 @@ struct frequencyItem {
 };
 
 char** parseLine(char*, int*);
-void addToHeaderTable(struct array*, char**, int);
+void addToHeaderTable(struct array*, char**, int, int);
 void removeNotSupportItems(struct array*, char**, int*);
 void sortList(struct array*, char**, int);
 void buildLink(struct array*, struct fpTree*);
 void insertToFPTree(struct array*, struct fpTree*, char**, int, int);
 
-void miningTree(struct frequencyItem, float);
-void findFrequencySet(struct array*, float);
+char** getPrefixPath(struct fpTree*, int*, int*);
+void miningTree(struct array*, struct fpTree*, int ,float, char**);
 
 #endif

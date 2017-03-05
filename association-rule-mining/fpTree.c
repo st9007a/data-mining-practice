@@ -26,20 +26,20 @@ char** parseLine(char* line, int* listLen) {
   return list;
 }
 
-void addToHeaderTable(struct array* headerTable, char** list, int listLen) {
+void addToHeaderTable(struct array* headerTable, char** list, int listLen, int times) {
   int i;
   for (i = 0; i < listLen; i++) {
     int j;
     int flag = 0;
     for (j = 0; j < headerTable->used; j++) {
       if (strcmp(headerTable->items[j].item, list[i]) == 0) {
-        headerTable->items[j].frequency++;
+        headerTable->items[j].frequency += times;
         flag++;
         break;
       }
     }
     if (flag == 0) {
-      struct frequencyItem f = { list[i], 1, NULL };
+      struct frequencyItem f = { list[i], times, NULL };
       push(headerTable, f);
     }
   }
@@ -133,3 +133,76 @@ void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** l
   }
 }
 
+char** getPrefixPath(struct fpTree* base, int* times, int* listLen) {
+  struct fpTree* pNode = base->parent;
+  char** list = malloc(*listLen * sizeof(char*));
+  int i = 0;
+  *times = base->count;
+  while (pNode->parent != NULL) {
+    list[i++] = pNode->item;
+    pNode = pNode->parent;
+  }
+  *listLen = i;
+  list = realloc(list, *listLen * sizeof(char*));
+  return list;
+}
+
+void miningTree(struct array* headerTable, struct fpTree* rootNode, int countOfMinSup, float minConf, char** suffix) {
+  if (rootNode->children ==  NULL) {
+    //handle null
+    return;
+  }
+
+  int i;
+  for (i = 0; i < headerTable->used; i++) {
+    struct array subHT;
+    struct fpTree subTree;
+    struct fpTree* linkTo = headerTable->items[i].link;
+    int j;
+
+    //suffix set
+    if (suffix == NULL) {
+      suffix = malloc(sizeof(char*));
+      suffix[0] = headerTable->items[i].item;
+    }
+    else {
+      for (j = 0; suffix[j] != NULL; j++) {}
+      suffix = realloc(suffix, sizeof(char*) * (j + 1));
+      suffix[j] = headerTable->items[i].item;
+    }
+
+    //build header table
+    newArray(&subHT, 1);
+    while (linkTo != NULL) {
+      char** list = NULL;
+      int times;
+      int listLen = headerTable->used;
+      list = getPrefixPath(linkTo, &times, &listLen);
+      addToHeaderTable(&subHT, list, listLen, times);
+    }
+    subHT = quickSort(subHT);
+
+    for (j = 0; j < subHT.used; j++) {
+      if (subHT.items[j].frequency >= countOfMinSup) {
+        removeMultiItems(&subHT, 0, j - 1);
+        break;
+      }
+    }
+
+    // build fp tree
+    linkTo = headerTable->items[i].link;
+    while (linkTo != NULL) {
+      char** list;
+      int times;
+      int listLen = subHT.used;
+      list = getPrefixPath(linkTo, &times, &listLen);
+      removeNotSupportItems(&subHT, list, &listLen);
+      sortList(&subHT, list, listLen);
+      insertToFPTree(&subHT, &subTree, list, listLen, times);
+    }
+
+    
+
+    miningTree(&subHT, &subTree, countOfMinSup, minConf, suffix);
+  }
+}

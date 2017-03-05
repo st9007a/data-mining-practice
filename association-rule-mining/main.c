@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
     char** list;
     line[strlen(line) - 1] = '\0';
     list = parseLine(line, &listLen);
-    addToHeaderTable(&headerTable, list, listLen);
+    addToHeaderTable(&headerTable, list, listLen, 1);
   }
   countOfMinSup = ceil(minSup * headerTable.used);
 
@@ -70,6 +70,8 @@ int main(int argc, char** argv) {
     sortList(&headerTable, list, listLen);
     insertToFPTree(&headerTable, &rootNode, list, listLen, 1);
   }
+
+  miningTree(&headerTable, &rootNode, countOfMinSup, minConf, NULL);
 
   return 0;
 }

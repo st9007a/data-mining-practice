@@ -146,13 +146,15 @@ void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** l
 
 char** getPrefixPath(struct fpTree* base, int* listLen) {
   struct fpTree* pNode = base;
+  printf("find prefix path: ");
   char** list = malloc(*listLen * sizeof(char*));
   int i = 0;
   while (pNode->parent != NULL) {
-    printf("%s\n", pNode->item);
+    printf("%s ", pNode->item);
     list[i++] = pNode->item;
     pNode = pNode->parent;
   }
+  printf("\n");
   *listLen = i;
   list = realloc(list, *listLen * sizeof(char*));
   return list;
@@ -200,6 +202,10 @@ void miningTree(struct array* headerTable, struct fpTree* rootNode, int countOfM
         break;
       }
     }
+
+    //for (j = 0; j < subHT.used; j++) {
+    //  printf("item: %s, count: %d\n", subHT.items[j].item, subHT.items[j].frequency);
+    //}
 
     // build fp tree
     linkTo = headerTable->items[i].link;

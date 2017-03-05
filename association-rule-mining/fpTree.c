@@ -142,20 +142,16 @@ void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** l
 }
 
 char** getPrefixPath(struct fpTree* base, int* listLen) {
-  struct fpTree* pNode = base->parent;
-  printf("find prefix path: ");
-  char** list = malloc(*listLen * sizeof(char*));
+  struct fpTree* pNode = base;
+  char** list;
   int i = 0;
+  list = malloc(*listLen * sizeof(char*));
   while (pNode->parent != NULL) {
-    printf("%s ", pNode->item);
-    list[i++] = pNode->item;
+    list[(*listLen)++] = pNode->item;
     pNode = pNode->parent;
   }
-  printf("\n");
   *listLen = i;
-  if (*listLen > 0) {
-    list = realloc(list, *listLen * sizeof(char*));
-  }
+  list = realloc(list, *listLen * sizeof(char*));
   return list;
 }
 
@@ -173,9 +169,11 @@ void miningTree(struct array* headerTable, struct fpTree* rootNode, int countOfM
     int j;
 
     //suffix set
+    printf("suffix\n");
     if (suffix == NULL) {
       suffix = malloc(sizeof(char*));
       suffix[0] = headerTable->items[i].item;
+      suffix[1] = NULL;//? magic bug
     }
     else {
       for (j = 0; suffix[j] != NULL; j++) {}
@@ -184,17 +182,17 @@ void miningTree(struct array* headerTable, struct fpTree* rootNode, int countOfM
     }
 
     //build header table
+    printf("header table\n");
     newArray(&subHT, 1);
     while (linkTo != NULL) {
       char** list = NULL;
       int times = linkTo->count;
       int listLen = headerTable->used;
       list = getPrefixPath(linkTo, &listLen);
-      if (list != NULL) {
-        addToHeaderTable(&subHT, list, listLen, times);
-      }
+      addToHeaderTable(&subHT, list, listLen, times);
       linkTo = linkTo->link;
     }
+
     subHT = quickSort(subHT);
 
     for (j = 0; j < subHT.used; j++) {
@@ -209,17 +207,16 @@ void miningTree(struct array* headerTable, struct fpTree* rootNode, int countOfM
     //}
 
     // build fp tree
+    printf("fp tree\n");
     linkTo = headerTable->items[i].link;
     while (linkTo != NULL) {
       char** list = NULL;
       int times = linkTo->count;
       int listLen = subHT.used;
       list = getPrefixPath(linkTo, &listLen);
-      if (list != NULL) {
-        removeNotSupportItems(&subHT, list, &listLen);
-        sortList(&subHT, list, listLen);
-        insertToFPTree(&subHT, &subTree, list, listLen, times);
-      }
+      removeNotSupportItems(&subHT, list, &listLen);
+      sortList(&subHT, list, listLen);
+      insertToFPTree(&subHT, &subTree, list, listLen, times);
       linkTo = linkTo->link;
     }
 

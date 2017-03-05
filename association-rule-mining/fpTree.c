@@ -94,7 +94,7 @@ void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** l
   }
 
   int i;
-  printf("insert\n");
+  printf("------------------------------\ninsert\n");
   struct fpTree* node = rootNode;
   for (i = listLen - 1; i >= 0; i--) {
     printf("list: %s, ", list[i]);

@@ -64,12 +64,12 @@ char** removeNotSupportItems(struct array* headerTable, char* line, int* listLen
 void sortList(struct array* headerTable, char** list, int listLen) {
   printf("sort\n");
   int i, j, pos = 0;
-  for (i = 0; i < listLen; i++) {
-    for (j = 0; j < headerTable->used; j++) {
-      if (strcmp(headerTable->items[j].item, list[i]) == 0) {
+  for (i = 0; i < headerTable->used; i++) {
+    for (j = 0; j < listLen; j++) {
+      if (strcmp(headerTable->items[i].item, list[j]) == 0) {
         char* tmp = list[pos];
-        list[pos++] = list[i];
-        list[i] = tmp;
+        list[pos++] = list[j];
+        list[j] = tmp;
         break;
       }
     }

@@ -65,6 +65,9 @@ int main(int argc, char** argv) {
       printf("list %s\n", list[i]);
     }
     sortList(&headerTable, list, listLen);
+    for (i = 0;i < listLen; i++) {
+      printf("sort %s\n", list[i]);
+    }
     insertToFPTree(&headerTable, &rootNode, list, listLen);
   }
 

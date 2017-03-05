@@ -45,31 +45,25 @@ void addToHeaderTable(struct array* headerTable, char** list, int listLen) {
   }
 }
 
-char** removeNotSupportItems(struct array* headerTable, char* line, int* listLen) {
-  char** list;
-  char* token = " ";
-  char* item;
-  char* cp = malloc(strlen(line) + 1);
-  *listLen = 0;
+char** removeNotSupportItems(struct array* headerTable, char** list, int* listLen) {
+  char** shortlist;
+  int i;
+  int len = 0;
 
-  strcpy(cp, line);
-  item = strtok(cp, token);
-  list = malloc(strlen(line) * sizeof(char*));
-  while (item != NULL) {
-    int i;
-    char* el = malloc(strlen(item));
-    strcpy(el, item);
-    for (i = 0; i < headerTable->used; i++) {
-      if (strcmp(el, headerTable->items[i].item) == 0) {
-        list[(*listLen)++] = el;
+  shortlist = malloc(*listLen * sizeof(char*));
+  for (i = 0; i < *listLen; i++) {
+    int j;
+    for (j = 0; j < headerTable->used; j++) {
+      if (strcmp(list[i], headerTable->items[j].item) == 0) {
+        shortlist[len++] = list[i];
         break;
       }
     }
-    item = strtok(NULL, token);
   }
 
-  list = realloc(list, (*listLen) * sizeof(char*));
-  return list;
+  *listLen = len;
+  shortlist = realloc(shortlist, (*listLen) * sizeof(char*));
+  return shortlist;
 }
 
 void sortList(struct array* headerTable, char** list, int listLen) {

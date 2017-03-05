@@ -38,9 +38,6 @@ int main(int argc, char** argv) {
     char** list;
     line[strlen(line) - 1] = '\0';
     list = parseLine(line, &listLen);
-    for (i = 0; i < listLen; i++) {
-      printf("%s\n", list[i]);
-    }
     addToHeaderTable(&headerTable, list, listLen);
   }
   countOfMinSup = ceil(minSup * headerTable.used);
@@ -68,7 +65,8 @@ int main(int argc, char** argv) {
     char** list;
     int listLen;
     line[strlen(line) - 1] = '\0';
-    list = removeNotSupportItems(&headerTable, line, &listLen);
+    list = parseLine(line, &listLen);
+    list = removeNotSupportItems(&headerTable, list, &listLen);
     sortList(&headerTable, list, listLen);
     insertToFPTree(&headerTable, &rootNode, list, listLen, 1);
   }

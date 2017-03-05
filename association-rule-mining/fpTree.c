@@ -142,7 +142,7 @@ void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** l
       child.link = NULL;
       node->children[node->childrenLen] = child;
       pos = node->childrenLen++;
-      buildLink(headerTable, &child);
+      buildLink(headerTable, &node->children[pos]);
     }
     node = &node->children[pos];
     printf("f: %lu\n", node->count);

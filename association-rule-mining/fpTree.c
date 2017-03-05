@@ -77,7 +77,7 @@ void sortList(struct array* headerTable, char** list, int listLen) {
 
 void buildLink(struct array* headerTable, struct fpTree* node) {
   int i;
-  printf("link\n");
+  printf("[build link] ");
   for (i = 0; i < headerTable->used; i++) {
     if (strcmp(headerTable->items[i].item, node->item) == 0) {
       struct fpTree* linkTo = headerTable->items[i].link;
@@ -97,7 +97,7 @@ void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** l
   printf("insert\n");
   struct fpTree* node = rootNode;
   for (i = listLen - 1; i >= 0; i--) {
-    printf("list: %s\n", list[i]);
+    printf("list: %s, ", list[i]);
     int j, pos;
     int isExist = 0;
     for (j = 0; j < node->childrenLen; j++) {
@@ -118,10 +118,11 @@ void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** l
         node->children = realloc(node->children, sizeof(struct fpTree) * node->childrenSize);
       }
       struct fpTree child = { list[i], 1, 0, 0, node, NULL, NULL };
-      //buildLink(headerTable, &child);
+      buildLink(headerTable, &child);
       node->children[node->childrenLen] = child;
       pos = node->childrenLen++;
     }
     node = &node->children[pos];
+    printf("f: %lu\n", node->count);
   }
 }

@@ -95,16 +95,16 @@ void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** l
   struct fpTree* node = rootNode;
   for (i = 0; i < listLen; i++) {
     int j, pos;
-    int flag = 0;
+    int isExist = 0;
     for (j = 0; j < node->childrenLen; j++) {
       if (strcmp(node->children[j].item, list[i]) == 0) {
         pos = j;
         node->children[j].count++;
-        flag++;
+        isExist++;
         break;
       }
     }
-    if (flag) {
+    if (!isExist) {
       if (node->childrenLen | node->childrenSize == 0) {
         node->childrenSize = 1;
         node->children = malloc(sizeof(struct fpTree));
@@ -113,9 +113,7 @@ void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** l
         node->childrenSize *= 2;
         node->children = realloc(node->children, sizeof(struct fpTree) * node->childrenSize);
       }
-      struct fpTree child;
-      child.item = list[i];
-      child.count = 1;
+      struct fpTree child = { list[i], 1, 0, 0 };
       child.parent = node;
       buildLink(headerTable, &child);
       node->children[node->childrenLen++] = child;

@@ -16,7 +16,7 @@ int main(int argc, char** argv) {
 
   int i;
   struct array headerTable;
-  struct fpTree rootNode;
+  struct fpTree rootNode = {"", 0, 0, 0};
 
   printf("Input your minimum support(0 ~ 1) : ");
   scanf("%f", &minSup);
@@ -61,9 +61,6 @@ int main(int argc, char** argv) {
     int listLen;
     line[strlen(line) - 1] = '\0';
     list = removeNotSupportItems(&headerTable, line, &listLen);
-    for (i = 0;i < listLen; i++) {
-      printf("list %s\n", list[i]);
-    }
     sortList(&headerTable, list, listLen);
     for (i = 0;i < listLen; i++) {
       printf("sort %s\n", list[i]);

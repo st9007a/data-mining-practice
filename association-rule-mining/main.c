@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
     int listLen;
     char** list;
     line[strlen(line) - 1] = '\0';
-    parseLine(line, list, &listLen);
+    list = parseLine(line, &listLen);
     for (i = 0; i < listLen; i++) {
       printf("%s\n", list[i]);
     }

@@ -20,7 +20,7 @@ struct frequencyItem {
   struct fpTree* link;
 };
 
-void parseLine(char*, char**, int*);
+char** parseLine(char*, int*);
 void addToHeaderTable(struct array*, char**, int);
 char** removeNotSupportItems(struct array*, char*, int*);
 void sortList(struct array*, char**, int);

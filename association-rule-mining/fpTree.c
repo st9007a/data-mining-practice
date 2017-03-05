@@ -4,7 +4,8 @@
 #include "fpTree.h"
 #include "array.c"
 
-void parseLine(char* line, char** list, int* listLen) {
+char** parseLine(char* line, int* listLen) {
+  char** list;
   int i = 0;
   char* token = " ";
   char* item;
@@ -14,7 +15,6 @@ void parseLine(char* line, char** list, int* listLen) {
   strcpy(cp, line);
   item = strtok(cp, token);
 
-  printf("%s\n", item);
   while (item != NULL) {
     char* el = malloc(strlen(item));
     strcpy(el, item);
@@ -23,6 +23,7 @@ void parseLine(char* line, char** list, int* listLen) {
   }
   list = realloc(list, i * sizeof(char*));
   *listLen = i;
+  return list;
 }
 
 void addToHeaderTable(struct array* headerTable, char** list, int listLen) {

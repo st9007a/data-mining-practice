@@ -25,9 +25,7 @@ void addToHeaderTable(struct array* headerTable, char* line) {
       }
     }
     if (flag == 0) {
-      struct frequencyItem f;
-      f.frequency = 1;
-      f.item = el;
+      struct frequencyItem f = { el, 1, NULL };
       push(headerTable, f);
     }
     item = strtok(NULL, token);
@@ -119,12 +117,12 @@ void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** l
         node->childrenSize *= 2;
         node->children = realloc(node->children, sizeof(struct fpTree) * node->childrenSize);
       }
-      struct fpTree child = { list[i], 1, 0, 0, node };
+      struct fpTree child = { list[i], 1, 0, 0, node, NULL, NULL };
       node->children[node->childrenLen] = child;
       pos = node->childrenLen++;
+      buildLink(headerTable, &node->children[pos]);
     }
     node = &node->children[pos];
-    buildLink(headerTable, node);
     printf("f: %lu\n", node->count);
   }
 }

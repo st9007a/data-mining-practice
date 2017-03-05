@@ -115,7 +115,6 @@ void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** l
     printf("list: %s, ", list[i]);
     int j, pos;
     int isExist = 0;
-    struct fpTree child;
     for (j = 0; j < node->childrenLen; j++) {
       if (strcmp(node->children[j].item, list[i]) == 0) {
         pos = j;
@@ -133,13 +132,9 @@ void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** l
         node->childrenSize *= 2;
         node->children = realloc(node->children, sizeof(struct fpTree) * node->childrenSize);
       }
-      child.item = list[i];
-      child.count = times;
-      child.childrenLen = 0;
-      child.childrenSize = 0;
-      child.parent = node;
-      child.children = NULL;
-      child.link = NULL;
+      struct fpTree child = {list[i], times, 0, 0, NULL, NULL, NULL};
+      child.parent = malloc(sizeof(struct fpTree));
+      *child.parent = *node;
       node->children[node->childrenLen] = child;
       pos = node->childrenLen++;
       buildLink(headerTable, &node->children[pos]);
@@ -149,12 +144,12 @@ void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** l
   }
 }
 
-char** getPrefixPath(struct fpTree* base, int* times, int* listLen) {
+char** getPrefixPath(struct fpTree* base, int* listLen) {
   struct fpTree* pNode = base;
   char** list = malloc(*listLen * sizeof(char*));
   int i = 0;
-  *times = base->count;
   while (pNode->parent != NULL) {
+    printf("%s\n", pNode->item);
     list[i++] = pNode->item;
     pNode = pNode->parent;
   }
@@ -191,10 +186,11 @@ void miningTree(struct array* headerTable, struct fpTree* rootNode, int countOfM
     newArray(&subHT, 1);
     while (linkTo != NULL) {
       char** list = NULL;
-      int times;
+      int times = linkTo->count;
       int listLen = headerTable->used;
-      list = getPrefixPath(linkTo, &times, &listLen);
+      list = getPrefixPath(linkTo, &listLen);
       addToHeaderTable(&subHT, list, listLen, times);
+      linkTo = linkTo->link;
     }
     subHT = quickSort(subHT);
 
@@ -209,12 +205,13 @@ void miningTree(struct array* headerTable, struct fpTree* rootNode, int countOfM
     linkTo = headerTable->items[i].link;
     while (linkTo != NULL) {
       char** list;
-      int times;
+      int times = linkTo->count;
       int listLen = subHT.used;
-      list = getPrefixPath(linkTo, &times, &listLen);
+      list = getPrefixPath(linkTo, &listLen);
       removeNotSupportItems(&subHT, list, &listLen);
       sortList(&subHT, list, listLen);
       insertToFPTree(&subHT, &subTree, list, listLen, times);
+      linkTo = linkTo->link;
     }
 
     //find frequency set

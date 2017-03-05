@@ -11,8 +11,7 @@ struct fpTree {
   struct fpTree* parent;
   struct fpTree* children;
   struct fpTree* link;
-  size_t condCount;
-} fpTreeDefault = { "", 1, 0, 0, NULL, NULL, NULL, 0 };
+} fpTreeDefault = { "", 1, 0, 0, NULL, NULL, NULL };
 
 struct frequencyItem {
   char* item;

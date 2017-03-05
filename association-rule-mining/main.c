@@ -71,7 +71,8 @@ int main(int argc, char** argv) {
     insertToFPTree(&headerTable, &rootNode, list, listLen, 1);
   }
 
-  miningTree(&headerTable, &rootNode, countOfMinSup, minConf, NULL);
+  fclose(record);
+  //miningTree(&headerTable, &rootNode, countOfMinSup, minConf, NULL);
 
   return 0;
 }

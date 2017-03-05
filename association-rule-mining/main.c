@@ -66,7 +66,7 @@ int main(int argc, char** argv) {
     int listLen;
     line[strlen(line) - 1] = '\0';
     list = parseLine(line, &listLen);
-    list = removeNotSupportItems(&headerTable, list, &listLen);
+    removeNotSupportItems(&headerTable, list, &listLen);
     sortList(&headerTable, list, listLen);
     insertToFPTree(&headerTable, &rootNode, list, listLen, 1);
   }

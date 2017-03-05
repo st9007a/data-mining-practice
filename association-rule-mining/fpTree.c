@@ -45,25 +45,24 @@ void addToHeaderTable(struct array* headerTable, char** list, int listLen) {
   }
 }
 
-char** removeNotSupportItems(struct array* headerTable, char** list, int* listLen) {
-  char** shortlist;
+void removeNotSupportItems(struct array* headerTable, char** list, int* listLen) {
   int i;
   int len = 0;
 
-  shortlist = malloc(*listLen * sizeof(char*));
   for (i = 0; i < *listLen; i++) {
     int j;
     for (j = 0; j < headerTable->used; j++) {
       if (strcmp(list[i], headerTable->items[j].item) == 0) {
-        shortlist[len++] = list[i];
+        char* tmp = list[i];
+        list[i] = list[len];
+        list[len++] = tmp;
         break;
       }
     }
   }
 
   *listLen = len;
-  shortlist = realloc(shortlist, (*listLen) * sizeof(char*));
-  return shortlist;
+  list = realloc(list, (*listLen) * sizeof(char*));
 }
 
 void sortList(struct array* headerTable, char** list, int listLen) {

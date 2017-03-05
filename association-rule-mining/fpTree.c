@@ -62,7 +62,6 @@ char** removeNotSupportItems(struct array* headerTable, char* line, int* listLen
 }
 
 void sortList(struct array* headerTable, char** list, int listLen) {
-  printf("sort\n");
   int i, j, pos = 0;
   for (i = 0; i < headerTable->used; i++) {
     for (j = 0; j < listLen; j++) {
@@ -90,10 +89,15 @@ void buildLink(struct array* headerTable, struct fpTree* node) {
 }
 
 void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** list, int listLen) {
+  if (listLen <= 0) {
+    return;
+  }
+
   int i;
   printf("insert\n");
   struct fpTree* node = rootNode;
-  for (i = 0; i < listLen; i++) {
+  for (i = listLen - 1; i >= 0; i--) {
+    printf("list: %s\n", list[i]);
     int j, pos;
     int isExist = 0;
     for (j = 0; j < node->childrenLen; j++) {
@@ -105,7 +109,7 @@ void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** l
       }
     }
     if (!isExist) {
-      if (node->childrenLen | node->childrenSize == 0) {
+      if ((node->childrenLen | node->childrenSize) == 0) {
         node->childrenSize = 1;
         node->children = malloc(sizeof(struct fpTree));
       }
@@ -113,11 +117,10 @@ void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** l
         node->childrenSize *= 2;
         node->children = realloc(node->children, sizeof(struct fpTree) * node->childrenSize);
       }
-      struct fpTree child = { list[i], 1, 0, 0 };
-      child.parent = node;
-      buildLink(headerTable, &child);
-      node->children[node->childrenLen++] = child;
-      pos = node->childrenLen - 1;
+      struct fpTree child = { list[i], 1, 0, 0, node, NULL, NULL };
+      //buildLink(headerTable, &child);
+      node->children[node->childrenLen] = child;
+      pos = node->childrenLen++;
     }
     node = &node->children[pos];
   }

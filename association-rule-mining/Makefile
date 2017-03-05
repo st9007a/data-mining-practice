@@ -16,6 +16,7 @@ try:
 test:
 	mv input.txt input.txt.orig
 	mv input.txt.test input.txt
-	./do
+
+reset:
 	mv input.txt input.txt.test
 	mv input.txt.orig input.txt

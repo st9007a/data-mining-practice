@@ -16,7 +16,7 @@ int main(int argc, char** argv) {
 
   int i;
   struct array headerTable;
-  struct fpTree root;
+  struct fpTree rootNode;
 
   printf("Input your minimum support(0 ~ 1) : ");
   scanf("%f", &minSup);
@@ -42,6 +42,9 @@ int main(int argc, char** argv) {
   printf("sort header table\n");
   headerTable = quickSort(headerTable);
 
+  for (i = 0; i < headerTable.used; i++) {
+    printf("items item: %s, count: %lu\n", headerTable.items[i].item, headerTable.items[i].frequency);
+  }
   printf("remove item less than minimum support\n");
   for (i = 0; i < headerTable.used; i++) {
     if (headerTable.items[i].frequency >= countOfMinSup) {
@@ -54,7 +57,15 @@ int main(int argc, char** argv) {
 
   fseek(record, 0, SEEK_SET);
   while ((read = getline(&line, &len, record)) != -1) {
+    char** list;
+    int listLen;
     line[strlen(line) - 1] = '\0';
+    list = removeNotSupportItems(&headerTable, line, &listLen);
+    for (i = 0;i < listLen; i++) {
+      printf("list %s\n", list[i]);
+    }
+    sortList(&headerTable, list, listLen);
+    insertToFPTree(&headerTable, &rootNode, list, listLen);
   }
 
   return 0;

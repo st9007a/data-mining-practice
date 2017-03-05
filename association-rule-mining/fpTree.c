@@ -34,7 +34,8 @@ void addToHeaderTable(struct array* headerTable, char* line) {
   }
 }
 
-void removeNotSupportItems(struct array* headerTable, char* line, char** list, int* listLen) {
+char** removeNotSupportItems(struct array* headerTable, char* line, int* listLen) {
+  char** list;
   char* token = " ";
   char* item;
   char* cp = malloc(strlen(line) + 1);
@@ -43,7 +44,6 @@ void removeNotSupportItems(struct array* headerTable, char* line, char** list, i
   strcpy(cp, line);
   item = strtok(cp, token);
   list = malloc(strlen(line) * sizeof(char*));
-
   while (item != NULL) {
     int i;
     char* el = malloc(strlen(item));
@@ -58,9 +58,11 @@ void removeNotSupportItems(struct array* headerTable, char* line, char** list, i
   }
 
   list = realloc(list, (*listLen) * sizeof(char*));
+  return list;
 }
 
 void sortList(struct array* headerTable, char** list, int listLen) {
+  printf("sort\n");
   int i, j, pos = 0;
   for (i = 0; i < listLen; i++) {
     for (j = 0; j < headerTable->used; j++) {
@@ -76,6 +78,7 @@ void sortList(struct array* headerTable, char** list, int listLen) {
 
 void buildLink(struct array* headerTable, struct fpTree* node) {
   int i;
+  printf("link\n");
   for (i = 0; i < headerTable->used; i++) {
     if (strcmp(headerTable->items[i].item, node->item) == 0) {
       struct fpTree* linkTo = headerTable->items[i].link;
@@ -88,6 +91,7 @@ void buildLink(struct array* headerTable, struct fpTree* node) {
 
 void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** list, int listLen) {
   int i;
+  printf("insert\n");
   struct fpTree* node = rootNode;
   for (i = 0; i < listLen; i++) {
     int j, pos;

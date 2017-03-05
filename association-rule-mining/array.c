@@ -32,12 +32,12 @@ void removeMultiItems(struct array* arr, size_t from, size_t to) {
   }
 
   size_t i;
-  for (i = from; i <= to; i++) {
+  for (i = from; i < arr->used; i++) {
     if (i + to - from + 1 < arr->used) {
       arr->items[i] = arr->items[i + to - from + 1];
     }
   }
-  arr->used -= to - from + 1;
+  arr->used -= (to - from + 1);
   arr->items = realloc(arr->items, sizeof(struct frequencyItem) * arr->used);
   arr->size = arr->used;
 }

@@ -42,9 +42,6 @@ int main(int argc, char** argv) {
   printf("sort header table\n");
   headerTable = quickSort(headerTable);
 
-  for (i = 0; i < headerTable.used; i++) {
-    printf("items item: %s, count: %lu\n", headerTable.items[i].item, headerTable.items[i].frequency);
-  }
 
   printf("remove item less than minimum support\n");
   for (i = 0; i < headerTable.used; i++) {
@@ -52,6 +49,10 @@ int main(int argc, char** argv) {
       removeMultiItems(&headerTable, 0, i - 1);
       break;
     }
+  }
+
+  for (i = 0; i < headerTable.used; i++) {
+    printf("items item: %s, count: %lu\n", headerTable.items[i].item, headerTable.items[i].frequency);
   }
 
   printf("Rescanf input.txt to build fp tree\n");

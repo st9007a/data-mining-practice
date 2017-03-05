@@ -8,11 +8,11 @@ FP tree algorithm implementation by c language
 
 Linux 3.13.0-92-generic
 
-## compile
+## Compile
 
 make
 
-## execute
+## Execute
 
 make run
 

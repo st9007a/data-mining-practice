@@ -16,7 +16,7 @@ int main(int argc, char** argv) {
 
   int i;
   struct array headerTable;
-  struct fpTree rootNode = { "root", 0, 0, 0 };
+  struct fpTree rootNode = fpTreeDefault;
 
   printf("Input your minimum support(0 ~ 1) : ");
   scanf("%f", &minSup);
@@ -34,8 +34,14 @@ int main(int argc, char** argv) {
 
   printf("scanf input.txt\n");
   while ((read = getline(&line, &len, record)) != -1) {
+    int listLen;
+    char** list;
     line[strlen(line) - 1] = '\0';
-    addToHeaderTable(&headerTable, line);
+    parseLine(line, list, &listLen);
+    for (i = 0; i < listLen; i++) {
+      printf("%s\n", list[i]);
+    }
+    addToHeaderTable(&headerTable, list, listLen);
   }
   countOfMinSup = ceil(minSup * headerTable.used);
 
@@ -64,7 +70,7 @@ int main(int argc, char** argv) {
     line[strlen(line) - 1] = '\0';
     list = removeNotSupportItems(&headerTable, line, &listLen);
     sortList(&headerTable, list, listLen);
-    insertToFPTree(&headerTable, &rootNode, list, listLen);
+    insertToFPTree(&headerTable, &rootNode, list, listLen, 1);
   }
 
   return 0;

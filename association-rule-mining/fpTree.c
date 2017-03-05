@@ -4,31 +4,43 @@
 #include "fpTree.h"
 #include "array.c"
 
-void addToHeaderTable(struct array* headerTable, char* line) {
+void parseLine(char* line, char** list, int* listLen) {
+  int i = 0;
   char* token = " ";
   char* item;
   char* cp = malloc(strlen(line) + 1);
+  list = malloc(strlen(line) / sizeof(char) * sizeof(char*));
 
   strcpy(cp, line);
   item = strtok(cp, token);
 
+  printf("%s\n", item);
   while (item != NULL) {
-    int i;
-    int flag = 0;
     char* el = malloc(strlen(item));
     strcpy(el, item);
-    for (i = 0; i < headerTable->used; i++) {
-      if (strcmp(headerTable->items[i].item, el) == 0) {
-        headerTable->items[i].frequency++;
+    list[i++] = el;
+    item = strtok(NULL, token);
+  }
+  list = realloc(list, i * sizeof(char*));
+  *listLen = i;
+}
+
+void addToHeaderTable(struct array* headerTable, char** list, int listLen) {
+  int i;
+  for (i = 0; i < listLen; i++) {
+    int j;
+    int flag = 0;
+    for (j = 0; j < headerTable->used; j++) {
+      if (strcmp(headerTable->items[j].item, list[i]) == 0) {
+        headerTable->items[j].frequency++;
         flag++;
         break;
       }
     }
     if (flag == 0) {
-      struct frequencyItem f = { el, 1, NULL };
+      struct frequencyItem f = { list[i], 1, NULL };
       push(headerTable, f);
     }
-    item = strtok(NULL, token);
   }
 }
 
@@ -88,7 +100,7 @@ void buildLink(struct array* headerTable, struct fpTree* node) {
   }
 }
 
-void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** list, int listLen) {
+void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** list, int listLen, int times) {
   if (listLen <= 0) {
     return;
   }
@@ -103,7 +115,7 @@ void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** l
     for (j = 0; j < node->childrenLen; j++) {
       if (strcmp(node->children[j].item, list[i]) == 0) {
         pos = j;
-        node->children[j].count++;
+        node->children[j].count += times;
         isExist++;
         break;
       }
@@ -117,7 +129,7 @@ void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** l
         node->childrenSize *= 2;
         node->children = realloc(node->children, sizeof(struct fpTree) * node->childrenSize);
       }
-      struct fpTree child = { list[i], 1, 0, 0, node, NULL, NULL };
+      struct fpTree child = { list[i], times, 0, 0, node, NULL, NULL, 0 };
       node->children[node->childrenLen] = child;
       pos = node->childrenLen++;
       buildLink(headerTable, &node->children[pos]);
@@ -126,3 +138,4 @@ void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** l
     printf("f: %lu\n", node->count);
   }
 }
+

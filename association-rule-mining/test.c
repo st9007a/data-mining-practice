@@ -4,6 +4,13 @@
 
 int main(int argc, char** argv) {
 
+  //reference test
+  struct fpTree ft = {"a", 1, 0 ,0};
+  struct fpTree fr = ft;
+  ft.item = "ss";
+  printf("%s\n", fr.item);
+  return 0;
+
   //logic
   int a1 = 4;
   int b1 = 6;
@@ -47,23 +54,6 @@ int main(int argc, char** argv) {
   }
 
   return 0;
-
-  // add to header table test
-  struct array ht;
-  newArray(&ht, 1);
-  addToHeaderTable(&ht, "1 2 1 4");
-  addToHeaderTable(&ht, "1 3 4 6");
-  addToHeaderTable(&ht, "2 1 3 5");
-  addToHeaderTable(&ht, "10 3 1 1");
-  addToHeaderTable(&ht, "3 2 2 6");
-
-  int j;
-  for(j=0;j<ht.used;j++) {
-    printf("%s : %lu\n", ht.items[j].item, ht.items[j].frequency);
-  }
-
-  return 0;
-
 
   // quick sort test
   struct array arr;

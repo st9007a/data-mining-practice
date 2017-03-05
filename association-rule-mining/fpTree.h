@@ -11,7 +11,8 @@ struct fpTree {
   struct fpTree* parent;
   struct fpTree* children;
   struct fpTree* link;
-};
+  size_t condCount;
+} fpTreeDefault = { "", 1, 0, 0, NULL, NULL, NULL, 0 };
 
 struct frequencyItem {
   char* item;
@@ -19,10 +20,14 @@ struct frequencyItem {
   struct fpTree* link;
 };
 
-void addToHeaderTable(struct array*, char*);
+void parseLine(char*, char**, int*);
+void addToHeaderTable(struct array*, char**, int);
 char** removeNotSupportItems(struct array*, char*, int*);
 void sortList(struct array*, char**, int);
 void buildLink(struct array*, struct fpTree*);
-void insertToFPTree(struct array*, struct fpTree*, char**, int);
+void insertToFPTree(struct array*, struct fpTree*, char**, int, int);
+
+void miningTree(struct frequencyItem, float);
+void findFrequencySet(struct array*, float);
 
 #endif

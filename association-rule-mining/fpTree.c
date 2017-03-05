@@ -169,7 +169,7 @@ void miningTree(struct array* headerTable, struct fpTree* rootNode, int countOfM
   int i;
   for (i = 0; i < headerTable->used; i++) {
     struct array subHT;
-    struct fpTree subTree;
+    struct fpTree subTree = fpTreeDefault;
     struct fpTree* linkTo = headerTable->items[i].link;
     int j;
 

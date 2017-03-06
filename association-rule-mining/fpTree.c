@@ -174,6 +174,16 @@ void trimPrefixPath(struct array* ht, char** list, int* listLen) {
   }
 }
 
+void swapPrefixPath(char** list, int listLen) {
+  int i;
+  for (i = 0; i < listLen; i++) {
+    char* tmp = list[i];
+    list[i] = list[listLen - 1];
+    list[listLen - 1] = tmp;
+    listLen--;
+  }
+}
+
 void miningTree(struct array* headerTable, struct fpTree* rootNode, int countOfMinSup, float minConf) {
   if (rootNode->children ==  NULL) {
     //handle null
@@ -241,6 +251,8 @@ void miningTree(struct array* headerTable, struct fpTree* rootNode, int countOfM
       int listLen = subHT.used;
       list = getPrefixPath(linkTo, &listLen);
       //! buid conditional sub tree
+      trimPrefixPath(&subHT, list, &listLen);
+      swapPrefixPath(list, listLen);
       linkTo = linkTo->link;
     }
 

@@ -234,7 +234,7 @@ void miningTree(struct array* headerTable, struct fpTree* rootNode, int countOfM
       printf("item: %s, count: %d\n", subHT.items[j].item, subHT.items[j].frequency);
     }
 
-    return;
+    //return;
     for (j = 0; j < subHT.used; j++) {
       if (subHT.items[j].frequency >= countOfMinSup) {
         removeMultiItems(&subHT, 0, j - 1);

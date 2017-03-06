@@ -143,11 +143,6 @@ const generateNextCandidate = pairs => {
 
 const generatePairSet = candidate => {
   if (candidate.length == 0 || candidate.length <= candidate[0].length) {
-    let setSize = 0
-    for (let i = 0; i < candSet.length; i++) {
-      setSize += candSet[i].length
-    }
-    console.log("size: " + setSize)
     return
   }
   pairSet.push(candidate)
@@ -186,6 +181,7 @@ reader.createInterface({
     if (cand.length > 0) {
       candSet.push(cand)
       generatePairSet(cand.map(el => el.pairs))
+      console.log(pairSet)
     }
   })
 })

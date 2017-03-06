@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "promise": "^7.1.1",
     "readline-promise": "0.0.1"
   }
 }

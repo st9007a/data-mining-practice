@@ -1,4 +1,5 @@
 const reader = require('readline-promise')
+const Promise = require('promise')
 const fs = require('fs')
 
 
@@ -23,6 +24,7 @@ const addData = array => {
   }
 }
 
+var p = 0
 const forEachTwoPair = (trac, cb) => {
   for (let i = 0; i < trac.length; i++) {
     for (let j = i + 1; j < trac.length; j++) {
@@ -30,6 +32,48 @@ const forEachTwoPair = (trac, cb) => {
       cb(pair)
     }
   }
+  process.stdout.write((p++).toString() + '\r')
+}
+
+const generateNextPair = candidate => {
+  if (candidate.length == 0) {
+    return new Error('Empty candidate')
+  }
+  //generate single set
+  let singleSet = []
+  for (const pairs of candidate) {
+    for (const p of pairs) {
+      if (singleSet.filter(el => el === p).length > 0) {
+        continue
+      }
+      singleSet.push(p)
+    }
+  }
+  //generate pair set from single set and candidate
+  let nextPair = []
+  for (let i = 0; i < candidate.length; i++) {
+    let notSet = singleSet
+    for (const p of candidate[i]) {
+      notSet = notSet.filter(el => el !== p)
+    }
+    for (const n of notSet) {
+      nextPair.push(candidate[i].concat(n))
+    }
+  }
+
+  //trim next pair
+  for (let i = 0; i < nextPair.length; i++) {
+    for (let j = i + 1; j < nextPair.length; j++) {
+      let check = 1
+      for (let k = 0; k < nextPair[i].length; k++) {
+        check |= nextPair[j].indexOf(nextPair[i][k])
+      }
+      if (check > 0) {
+        nextPair.splice(j, 1)
+      }
+    }
+  }
+  return nextPair
 }
 
 const toHash = pair => {
@@ -58,7 +102,6 @@ reader.createInterface({
 })
 .then(count => {
   sup *= count.lines
-  console.log(sup)
   let candidate = []
   for (let i = 0; i < hash.length; i++) {
     if (hash[i].count < sup) {
@@ -71,6 +114,7 @@ reader.createInterface({
     }
   }
   console.log(candidate)
+  console.log(generateNextPair(candidate))
 })
 .catch(err => {
   console.log(err)

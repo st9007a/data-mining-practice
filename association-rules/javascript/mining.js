@@ -112,16 +112,12 @@ const generateNextPair = candidate => {
 }
 
 const findLimitedCand = (oldCand, nextPair) => {
-  nextPair = nextPair.map(el => el.pairs)
-  oldCand = oldCand.map(el => { return {count: 0, pairs: el} })
+  oldCand.forEach(el => { el.count = 0 })
   for (let i = 0; i < oldCand.length; i++) {
     for (let j = 0; j < nextPair.length; j++) {
-      let check = 1
-      for (let k = 0; k < oldCand[i].pairs.length; k++) {
-        check |= nextPair[j].indexOf(oldCand[i].pairs[k])
-      }
-      if (check > 0) {
+      if (matchRecord(oldCand[i].pairs, nextPair[j]) > 0) {
         oldCand[i].count++
+        break
       }
     }
   }

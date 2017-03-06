@@ -57,6 +57,7 @@ reader.createInterface({
 .then(count => {
   console.log(count)
   console.log(hash)
+  con
   /*
   console.log(hash[0].pairs)
   console.log(hash[1].pairs)

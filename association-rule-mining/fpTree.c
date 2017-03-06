@@ -156,15 +156,22 @@ char** getPrefixPath(struct fpTree* base, int* listLen) {
 }
 
 void trimPrefixPath(struct array* ht, char** list, int* listLen) {
+  printf("trim\n");
   int i, j;
+  printf("len %d\n", *listLen);
   for (i = 0; i < *listLen; i++) {
     int isExist = 0;
+    printf("check\n");
     for (j = 0; j < ht->used; j++) {
+      printf("1\n");
       if (strcmp(list[i], ht->items[j].item) == 0) {
+        printf("2\n");
         isExist = j;
         break;
       }
+      printf("3\n");
     }
+    printf("done\n");
     if (!isExist) {
       for (j = isExist; j < *listLen; j++) {
         list[isExist] = list[isExist + 1];
@@ -172,9 +179,11 @@ void trimPrefixPath(struct array* ht, char** list, int* listLen) {
       *listLen--;
     }
   }
+  printf("finish\n");
 }
 
 void reversePrefixPath(char** list, int listLen) {
+  printf("reverse\n");
   int i;
   for (i = 0; i < listLen; i++) {
     char* tmp = list[i];
@@ -234,13 +243,17 @@ void miningTree(struct array* headerTable, struct fpTree* rootNode, int countOfM
       printf("item: %s, count: %d\n", subHT.items[j].item, subHT.items[j].frequency);
     }
 
-    //return;
     for (j = 0; j < subHT.used; j++) {
       if (subHT.items[j].frequency >= countOfMinSup) {
         removeMultiItems(&subHT, 0, j - 1);
         break;
       }
     }
+
+    for (j = 0; j < subHT.used; j++) {
+      printf("sub ht %s\n", subHT.items[j].item);
+    }
+    //return;
 
     // build fp tree
     printf("fp tree\n");

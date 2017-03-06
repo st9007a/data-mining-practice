@@ -186,7 +186,6 @@ reader.createInterface({
     if (cand.length > 0) {
       candSet.push(cand)
       generatePairSet(cand.map(el => el.pairs))
-      console.log(limitedSet)
     }
   })
 })

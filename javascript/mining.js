@@ -2,13 +2,15 @@ const reader = require('readline-promise')
 const fs = require('fs')
 
 
-const sup = process.argv[process.argv.indexOf('-s') + 1]
-const conf = process.argv[process.argv.indexOf('-c') + 1]
+var sup = parseFloat(process.argv[process.argv.indexOf('-s') + 1])
+var conf = parseFloat(process.argv[process.argv.indexOf('-c') + 1])
 
 var holder = {}
 var hash = []
 
-for (let i = 0; i < 7; i++) hash.push({ count: 0, pairs: [], counts: [] })
+for (let i = 0; i < 7; i++) {
+  hash.push({ count: 0, pairs: [], counts: [] })
+}
 
 const addData = array => {
   for (const el of array) {
@@ -55,18 +57,20 @@ reader.createInterface({
   })
 })
 .then(count => {
-  console.log(count)
-  console.log(hash)
-  con
-  /*
-  console.log(hash[0].pairs)
-  console.log(hash[1].pairs)
-  console.log(hash[2].pairs)
-  console.log(hash[3].pairs)
-  console.log(hash[4].pairs)
-  console.log(hash[5].pairs)
-  console.log(hash[6].pairs)
-  */
+  sup *= count.lines
+  console.log(sup)
+  let candidate = []
+  for (let i = 0; i < hash.length; i++) {
+    if (hash[i].count < sup) {
+      continue
+    }
+    for (let j = 0; j < hash[i].pairs.length; j++) {
+      if (hash[i].counts[j] >= sup) {
+        candidate.push(hash[i].pairs[j])
+      }
+    }
+  }
+  console.log(candidate)
 })
 .catch(err => {
   console.log(err)

@@ -151,11 +151,11 @@ char** getPrefixPath(struct fpTree* base, int* listLen) {
     pNode = pNode->parent;
   }
   *listLen = i;
-  list = *listLen == 0 ? NULL : realloc(list, *listLen * sizeof(char*));
+  list = *listLen == 0 ? NULL : list;
   return list;
 }
 
-void miningTree(struct array* headerTable, struct fpTree* rootNode, int countOfMinSup, float minConf, char** suffix) {
+void miningTree(struct array* headerTable, struct fpTree* rootNode, int countOfMinSup, float minConf) {
   if (rootNode->children ==  NULL) {
     //handle null
     printf("empty tree\n");
@@ -170,18 +170,18 @@ void miningTree(struct array* headerTable, struct fpTree* rootNode, int countOfM
     int j;
 
 
-    //suffix set
-    printf("suffix\n");
-    if (suffix == NULL) {
-      suffix = malloc(sizeof(char*));
-      suffix[0] = headerTable->items[i].item;
-      suffix[1] = NULL;//? magic bug
-    }
-    else {
-      for (j = 0; suffix[j] != NULL; j++) {}
-      suffix = realloc(suffix, sizeof(char*) * (j + 1));
-      suffix[j] = headerTable->items[i].item;
-    }
+    ////suffix set
+    //printf("suffix\n");
+    //if (suffix == NULL) {
+    //  suffix = malloc(sizeof(char*));
+    //  suffix[0] = headerTable->items[i].item;
+    //  suffix[1] = NULL;//? magic bug
+    //}
+    //else {
+    //  for (j = 0; suffix[j] != NULL; j++) {}
+    //  suffix = realloc(suffix, sizeof(char*) * (j + 1));
+    //  suffix[j] = headerTable->items[i].item;
+    //}
 
     //build header table
     printf("header table\n");
@@ -191,28 +191,27 @@ void miningTree(struct array* headerTable, struct fpTree* rootNode, int countOfM
       int times = linkTo->count;
       int listLen = headerTable->used;
       list = getPrefixPath(linkTo, &listLen);
-      printf("%d\n", listLen);
+      printf("prefix ---\n");
+      printf("prefix times %d\n", times);
+      for (j = 0; j < listLen; j++) {
+        printf("prefix %s\n", list[j]);
+      }
       addToHeaderTable(&subHT, list, listLen, times);
       linkTo = linkTo->link;
     }
 
-
     subHT = quickSort(subHT);
     for (j = 0; j < subHT.used; j++) {
-      printf("wtf ???????? %s, %d\n", subHT.items[j].item, subHT.items[j].frequency);
+      printf("item: %s, count: %d\n", subHT.items[j].item, subHT.items[j].frequency);
     }
 
-    printf("min !!!!!!!!!!!! %d\n", countOfMinSup);
+    return;
     for (j = 0; j < subHT.used; j++) {
       if (subHT.items[j].frequency >= countOfMinSup) {
         removeMultiItems(&subHT, 0, j - 1);
         break;
       }
     }
-
-    //for (j = 0; j < subHT.used; j++) {
-    //  printf("item: %s, count: %d\n", subHT.items[j].item, subHT.items[j].frequency);
-    //}
 
     // build fp tree
     printf("fp tree\n");
@@ -222,14 +221,12 @@ void miningTree(struct array* headerTable, struct fpTree* rootNode, int countOfM
       int times = linkTo->count;
       int listLen = subHT.used;
       list = getPrefixPath(linkTo, &listLen);
-      removeNotSupportItems(&subHT, list, &listLen);
-      sortList(&subHT, list, listLen);
-      insertToFPTree(&subHT, &subTree, list, listLen, times);
+      //! buid conditional sub tree
       linkTo = linkTo->link;
     }
 
     //find frequency set
 
-    miningTree(&subHT, &subTree, countOfMinSup, minConf, suffix);
+    miningTree(&subHT, &subTree, countOfMinSup, minConf);
   }
 }

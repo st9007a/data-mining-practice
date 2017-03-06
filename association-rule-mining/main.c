@@ -75,7 +75,7 @@ int main(int argc, char** argv) {
   }
 
   fclose(record);
-  //miningTree(&headerTable, &rootNode, countOfMinSup, minConf, NULL);
+  miningTree(&headerTable, &rootNode, countOfMinSup, minConf);
 
   return 0;
 }

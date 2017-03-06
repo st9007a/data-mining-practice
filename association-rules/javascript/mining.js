@@ -40,6 +40,14 @@ const toHash = pair => {
   hash[index].count++
 }
 
+const matchRecord = (pair, data) => {
+  let check = 1
+  for (let j = 0; j < pair.length; j++) {
+    check |= data.indexOf(pair[j])
+  }
+  return check
+}
+
 const generateNextPair = candidate => {
   if (candidate.length == 0) {
     return new Error('Empty candidate')
@@ -121,6 +129,26 @@ const findLimitedCand = (oldCand, nextPair) => {
   oldCand.forEach(el => limitedSet.push(el))
 }
 
+const findAllCand = () => {
+  pairSet = pairSet.map(el => { return { count: 0, pairs: el } })
+  return reader.createInterface({
+    terminal: false,
+    input: fs.createReadStream('input.txt')
+  })
+  .each(line => {
+    const transcation = line.split(" ").filter(el => el !== '')
+    for (let j = 0; j < pairSet.length; j++) {
+      if (matchRecord(pairSet[j].pairs, transcation) > 1) {
+        pairSet[j].count++
+      }
+    }
+  })
+  .then(count => {
+    pairSet = pairSet.filter(el => el.count > sup)
+    console.log(pairSet)
+  })
+}
+
 const generateNextCandidate = pairs => {
   pairs = pairs.map(el => { return {count: 0, pairs: el} })
   return reader.createInterface({
@@ -147,7 +175,9 @@ const generatePairSet = pair => {
   if (p.length == 0) {
     return
   }
-  pairSet.push(p)
+  for (let i = 0; i < p.length; i++) {
+    pairSet.push(p[i])
+  }
   generatePairSet(p)
 }
 
@@ -183,7 +213,14 @@ reader.createInterface({
     if (cand.length > 0) {
       candSet.push(cand)
       generatePairSet(cand.map(el => el.pairs))
-      console.log(pairSet)
+      return 1
+    }
+    return 0
+  })
+  .then(flag => {
+    console.log(flag)
+    if (flag === 1) {
+      findAllCand()
     }
   })
 })

@@ -144,19 +144,15 @@ void insertToFPTree(struct array* headerTable, struct fpTree* rootNode, char** l
 char** getPrefixPath(struct fpTree* base, int* listLen) {
   printf("prefix\n");
   struct fpTree* pNode = base;
-  if (pNode->parent == NULL) {
-    *listLen = 0;
-    return NULL;
-  }
   char** list;
   int i = 0;
   list = malloc(*listLen * sizeof(char*));
   while (pNode->parent != NULL) {
-    list[(*listLen)++] = pNode->item;
+    list[i++] = pNode->item;
     pNode = pNode->parent;
   }
   *listLen = i;
-  list = realloc(list, *listLen * sizeof(char*));
+  list = i == 0 ? NULL : realloc(list, *listLen * sizeof(char*));
   return list;
 }
 

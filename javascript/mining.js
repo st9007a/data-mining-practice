@@ -6,7 +6,7 @@ const fs = require('fs')
 var sup = parseFloat(process.argv[process.argv.indexOf('-s') + 1])
 var conf = parseFloat(process.argv[process.argv.indexOf('-c') + 1])
 
-var holder = {}
+var limitedSet = []
 var hash = []
 
 for (let i = 0; i < 7; i++) {
@@ -35,15 +35,30 @@ const forEachTwoPair = (trac, cb) => {
   process.stdout.write((p++).toString() + '\r')
 }
 
+const toHash = pair => {
+  const index = (parseInt(pair[0]) * 10 + parseInt(pair[1])) % 7
+  for (let i = 0; i < hash[index].pairs.length; i++) {
+    if (hash[index].pairs[i][0] == pair[0] && hash[index].pairs[i][1] == pair[1]) {
+      hash[index].count++
+      hash[index].counts[i]++
+      return
+    }
+  }
+  hash[index].pairs.push(pair)
+  hash[index].counts.push(1)
+  hash[index].count++
+}
+
 const generateNextPair = candidate => {
   if (candidate.length == 0) {
     return new Error('Empty candidate')
   }
 
   const vote = candidate[0].length
+  let singleSet = []
+  let nextPair = []
 
   //generate single set
-  let singleSet = []
   for (const pairs of candidate) {
     for (const p of pairs) {
       if (singleSet.filter(el => el === p).length > 0) {
@@ -53,7 +68,6 @@ const generateNextPair = candidate => {
     }
   }
   //generate pair set from single set and candidate
-  let nextPair = []
   for (let i = 0; i < candidate.length; i++) {
     let notSet = singleSet
     for (const p of candidate[i]) {
@@ -90,22 +104,50 @@ const generateNextPair = candidate => {
     }
   }
   nextPair = nextPair.filter(el => el.count > vote)
+  nextPair.forEach(el => {el.count = 0})
+
+  //find unuse candidate
+  findLimitedCand(candidate, nextPair)
 
   return nextPair
 }
 
-const toHash = pair => {
-  const index = (parseInt(pair[0]) * 10 + parseInt(pair[1])) % 7
-  for (let i = 0; i < hash[index].pairs.length; i++) {
-    if (hash[index].pairs[i][0] == pair[0] && hash[index].pairs[i][1] == pair[1]) {
-      hash[index].count++
-      hash[index].counts[i]++
-      return
+const findLimitedCand = (oldCand, nextPair) => {
+  nextPair = nextPair.map(el => el.pairs)
+  oldCand = oldCand.map(el => { return {count: 0, pairs: el} })
+  for (let i = 0; i < oldCand.length; i++) {
+    for (let j = 0; j < nextPair.length; j++) {
+      let check = 1
+      for (let k = 0; k < oldCand[i].pairs.length; k++) {
+        check |= nextPair[j].indexOf(oldCand[i].pairs[k])
+      }
+      if (check > 0) {
+        oldCand[i].count++
+      }
     }
   }
-  hash[index].pairs.push(pair)
-  hash[index].counts.push(1)
-  hash[index].count++
+  oldCand = oldCand.filter(el => el.count == 0).map(el => el.pairs)
+  limitedSet.push(oldCand)
+}
+
+const generateNextCandidate = pairs => {
+  return reader.createInterface({
+    terminal: false,
+    input: fs.createReadStream('input.txt')
+  })
+  .each(line => {
+    let transcation = line.split(' ').filter(el => el !== '')
+    for (let i = 0; i < pairs.length; i++) {
+      let check = 1
+      for (let j = 0; j < pairs[i].pairs.length; j++) {
+        check |= transcation.indexOf(pairs[i].pairs[j])
+      }
+      if (check > 0) {
+        pairs[i].count++
+      }
+    }
+  })
+  .then(count => pairs.filter(el => el.count >= sup).map(el => el.pairs))
 }
 
 reader.createInterface({
@@ -131,8 +173,10 @@ reader.createInterface({
       }
     }
   }
+  let next = null
   console.log(candidate)
-  console.log(generateNextPair(candidate))
+  console.log(next = generateNextPair(candidate))
+  generateNextCandidate(next).then(cand => console.log(cand))
 })
 .catch(err => {
   console.log(err)

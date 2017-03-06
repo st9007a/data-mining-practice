@@ -143,12 +143,12 @@ const generateNextCandidate = pairs => {
 }
 
 const generatePairSet = pair => {
-  if (pair.length == 0) {
+  const p = generateNextPair(pair.map(el => { return { count: 0, pairs: el }}))
+  if (p.length == 0) {
     return
   }
-  console.log(pair)
-  pairSet.push(pair)
-  generatePairSet(generateNextPair(pair).map(el => el.pairs))
+  pairSet.push(p)
+  generatePairSet(p)
 }
 
 reader.createInterface({

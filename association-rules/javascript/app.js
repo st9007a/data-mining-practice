@@ -112,16 +112,16 @@ const generateNextPair = candidate => {
 }
 
 const findLimitedCand = (oldCand, nextPair) => {
-  oldCand.forEach(el => { el.count = 0 })
+  oldCand.forEach(el => { el.vote = 0 })
   for (let i = 0; i < oldCand.length; i++) {
     for (let j = 0; j < nextPair.length; j++) {
       if (matchRecord(oldCand[i].pairs, nextPair[j]) > 0) {
-        oldCand[i].count++
+        oldCand[i].vote++
         break
       }
     }
   }
-  oldCand = oldCand.filter(el => el.count == 0).map(el => el.pairs)
+  oldCand = oldCand.filter(el => el.vote == 0).map(el => el.pairs)
   oldCand.forEach(el => limitedSet.push(el))
 }
 
@@ -222,6 +222,7 @@ reader.createInterface({
   .then(flag => {
     if (flag === 1) {
       findAllCand()
+      console.log(candSet)
     }
   })
 })

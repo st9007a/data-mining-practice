@@ -130,22 +130,30 @@ const findLimitedCand = (oldCand, nextPair) => {
 }
 
 const findAllCand = () => {
-  pairSet = pairSet.map(el => { return { count: 0, pairs: el } })
+  for (let i = 0; i < pairSet.length; i++) {
+    for (let j = 0; j < pairSet[i].length; j++) {
+      pairSet[i][j] = { count: 0, pairs: pairSet[i][j] }
+    }
+  }
   return reader.createInterface({
     terminal: false,
     input: fs.createReadStream('input.txt')
   })
   .each(line => {
     const transcation = line.split(" ").filter(el => el !== '')
-    for (let j = 0; j < pairSet.length; j++) {
-      if (matchRecord(pairSet[j].pairs, transcation) > 1) {
-        pairSet[j].count++
+    for (let i = 0; i < pairSet.length; i++) {
+      for (let j = 0; j < pairSet[i].length; j++) {
+        if (matchRecord(pairSet[i][j].pairs, transcation) > 1) {
+          pairSet[i][j].count++
+        }
       }
     }
   })
   .then(count => {
-    pairSet = pairSet.filter(el => el.count > sup)
-    console.log(pairSet)
+    for (let i = 0; i < pairSet.length; i++) {
+      pairSet[i] = pairSet[i].filter(el => el.count > sup)
+    }
+    candSet = candSet.concat(pairSet)
   })
 }
 
@@ -175,9 +183,7 @@ const generatePairSet = pair => {
   if (p.length == 0) {
     return
   }
-  for (let i = 0; i < p.length; i++) {
-    pairSet.push(p[i])
-  }
+  pairSet.push(p)
   generatePairSet(p)
 }
 
@@ -218,7 +224,6 @@ reader.createInterface({
     return 0
   })
   .then(flag => {
-    console.log(flag)
     if (flag === 1) {
       findAllCand()
     }

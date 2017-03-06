@@ -27,7 +27,7 @@ void buildLink(struct array*, struct fpTree*);
 void insertToFPTree(struct array*, struct fpTree*, char**, int, int);
 
 char** getPrefixPath(struct fpTree*, int*);
-void trimPrefixPath(struct array*, char**);
+void trimPrefixPath(struct array*, char**, int*);
 void swapPrefixPath(char**);
 void miningTree(struct array*, struct fpTree*, int ,float);
 

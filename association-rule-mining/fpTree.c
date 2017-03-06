@@ -155,8 +155,23 @@ char** getPrefixPath(struct fpTree* base, int* listLen) {
   return list;
 }
 
-void trimPrefixPath(struct array* ht, char** list) {
-  for ()
+void trimPrefixPath(struct array* ht, char** list, int* listLen) {
+  int i, j;
+  for (i = 0; i < *listLen; i++) {
+    int isExist = 0;
+    for (j = 0; j < ht->used; j++) {
+      if (strcmp(list[i], ht->items[j].item) == 0) {
+        isExist = j;
+        break;
+      }
+    }
+    if (!isExist) {
+      for (j = isExist; j < *listLen; j++) {
+        list[isExist] = list[isExist + 1];
+      }
+      *listLen--;
+    }
+  }
 }
 
 void miningTree(struct array* headerTable, struct fpTree* rootNode, int countOfMinSup, float minConf) {

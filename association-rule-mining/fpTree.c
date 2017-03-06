@@ -174,7 +174,7 @@ void trimPrefixPath(struct array* ht, char** list, int* listLen) {
   }
 }
 
-void swapPrefixPath(char** list, int listLen) {
+void reversePrefixPath(char** list, int listLen) {
   int i;
   for (i = 0; i < listLen; i++) {
     char* tmp = list[i];
@@ -250,9 +250,9 @@ void miningTree(struct array* headerTable, struct fpTree* rootNode, int countOfM
       int times = linkTo->count;
       int listLen = subHT.used;
       list = getPrefixPath(linkTo, &listLen);
-      //! buid conditional sub tree
       trimPrefixPath(&subHT, list, &listLen);
-      swapPrefixPath(list, listLen);
+      reversePrefixPath(list, listLen);
+      insertToFPTree(&subHT, &subTree, list, listLen, times);
       linkTo = linkTo->link;
     }
 

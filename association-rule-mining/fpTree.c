@@ -155,6 +155,10 @@ char** getPrefixPath(struct fpTree* base, int* listLen) {
   return list;
 }
 
+void trimPrefixPath(struct array* ht, char** list) {
+  for ()
+}
+
 void miningTree(struct array* headerTable, struct fpTree* rootNode, int countOfMinSup, float minConf) {
   if (rootNode->children ==  NULL) {
     //handle null

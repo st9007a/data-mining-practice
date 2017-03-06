@@ -39,6 +39,9 @@ const generateNextPair = candidate => {
   if (candidate.length == 0) {
     return new Error('Empty candidate')
   }
+
+  const vote = candidate[0].length
+
   //generate single set
   let singleSet = []
   for (const pairs of candidate) {
@@ -57,7 +60,7 @@ const generateNextPair = candidate => {
       notSet = notSet.filter(el => el !== p)
     }
     for (const n of notSet) {
-      nextPair.push(candidate[i].concat(n))
+      nextPair.push({ count: 0, pairs: candidate[i].concat(n).sort((a, b) => parseInt(a) - parseInt(b)) })
     }
   }
 
@@ -65,14 +68,29 @@ const generateNextPair = candidate => {
   for (let i = 0; i < nextPair.length; i++) {
     for (let j = i + 1; j < nextPair.length; j++) {
       let check = 1
-      for (let k = 0; k < nextPair[i].length; k++) {
-        check |= nextPair[j].indexOf(nextPair[i][k])
+      for (let k = 0; k < nextPair[i].pairs.length; k++) {
+        check |= nextPair[j].pairs.indexOf(nextPair[i].pairs[k])
       }
       if (check > 0) {
         nextPair.splice(j, 1)
       }
     }
   }
+
+  //vote
+  for (const c of candidate) {
+    for (const np of nextPair) {
+      let check = 1
+      for (const citem of c) {
+        check |= np.pairs.indexOf(citem)
+      }
+      if (check > 0) {
+        np.count++
+      }
+    }
+  }
+  nextPair = nextPair.filter(el => el.count > vote)
+
   return nextPair
 }
 

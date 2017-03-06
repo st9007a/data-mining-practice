@@ -45,27 +45,28 @@ const generateNextPair = candidate => {
     return new Error('Empty candidate')
   }
 
-  const vote = candidate[0].length
+  const vote = candidate[0].pairs.length
   let singleSet = []
   let nextPair = []
 
   //generate single set
-  for (const pairs of candidate) {
-    for (const p of pairs) {
-      if (singleSet.filter(el => el === p).length > 0) {
+  for (const c of candidate) {
+    for (const pair of c.pairs) {
+      if (singleSet.filter(el => el === pair).length > 0) {
         continue
       }
-      singleSet.push(p)
+      singleSet.push(pair)
     }
   }
+
   //generate pair set from single set and candidate
   for (let i = 0; i < candidate.length; i++) {
     let notSet = singleSet
-    for (const p of candidate[i]) {
+    for (const p of candidate[i].pairs) {
       notSet = notSet.filter(el => el !== p)
     }
     for (const n of notSet) {
-      nextPair.push({ count: 0, pairs: candidate[i].concat(n).sort((a, b) => parseInt(a) - parseInt(b)) })
+      nextPair.push({ count: 0, pairs: candidate[i].pairs.concat(n).sort((a, b) => parseInt(a) - parseInt(b)) })
     }
   }
 
@@ -86,7 +87,7 @@ const generateNextPair = candidate => {
   for (const c of candidate) {
     for (const np of nextPair) {
       let check = 1
-      for (const citem of c) {
+      for (const citem of c.pairs) {
         check |= np.pairs.indexOf(citem)
       }
       if (check > 0) {
@@ -94,8 +95,7 @@ const generateNextPair = candidate => {
       }
     }
   }
-  nextPair = nextPair.filter(el => el.count > vote)
-  nextPair.forEach(el => {el.count = 0})
+  nextPair = nextPair.filter(el => el.count > vote).map(el => el.pairs)
 
   //find unuse candidate
   findLimitedCand(candidate, nextPair)
@@ -122,6 +122,7 @@ const findLimitedCand = (oldCand, nextPair) => {
 }
 
 const generateNextCandidate = pairs => {
+  pairs = pairs.map(el => { return {count: 0, pairs: el} })
   return reader.createInterface({
     terminal: false,
     input: fs.createReadStream('input.txt')
@@ -141,12 +142,13 @@ const generateNextCandidate = pairs => {
   .then(count => pairs.filter(el => el.count >= sup))
 }
 
-const generatePairSet = candidate => {
-  if (candidate.length == 0 || candidate.length <= candidate[0].length) {
+const generatePairSet = pair => {
+  if (pair.length == 0) {
     return
   }
-  pairSet.push(candidate)
-  generatePairSet(generateNextPair(candidate).map(el => el.pairs))
+  console.log(pair)
+  pairSet.push(pair)
+  generatePairSet(generateNextPair(pair).map(el => el.pairs))
 }
 
 reader.createInterface({
@@ -174,9 +176,9 @@ reader.createInterface({
     }
   }
   candSet.push(candidate)
-  //get trhee-pair candidate
+  //get three-pair candidate
   let next = null
-  nextPairs = generateNextPair(candidate.map(el => el.pairs))
+  nextPairs = generateNextPair(candidate)
   generateNextCandidate(nextPairs).then(cand => {
     if (cand.length > 0) {
       candSet.push(cand)

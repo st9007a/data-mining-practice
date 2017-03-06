@@ -33,14 +33,17 @@ int main(int argc, char** argv) {
   }
 
   printf("scanf input.txt\n");
+  int c = 0;
   while ((read = getline(&line, &len, record)) != -1) {
     int listLen;
     char** list;
     line[strlen(line) - 1] = '\0';
     list = parseLine(line, &listLen);
     addToHeaderTable(&headerTable, list, listLen, 1);
+    c++;
   }
-  countOfMinSup = ceil(minSup * headerTable.used);
+  countOfMinSup = ceil(minSup * c);
+  printf("min sup: %d\n", countOfMinSup);
 
   printf("sort header table\n");
   headerTable = quickSort(headerTable);
@@ -72,7 +75,7 @@ int main(int argc, char** argv) {
   }
 
   fclose(record);
-  miningTree(&headerTable, &rootNode, countOfMinSup, minConf, NULL);
+  //miningTree(&headerTable, &rootNode, countOfMinSup, minConf, NULL);
 
   return 0;
 }

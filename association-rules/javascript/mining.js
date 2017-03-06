@@ -8,6 +8,7 @@ var conf = parseFloat(process.argv[process.argv.indexOf('-c') + 1])
 
 var candSet = []
 var limitedSet = []
+var pairSet = []
 var hash = []
 
 for (let i = 0; i < 7; i++) {
@@ -137,10 +138,10 @@ const generateNextCandidate = pairs => {
       }
     }
   })
-  .then(count => pairs.filter(el => el.count >= sup).map(el => el.pairs))
+  .then(count => pairs.filter(el => el.count >= sup))
 }
 
-const r = candidate => {
+const generatePairSet = candidate => {
   if (candidate.length == 0 || candidate.length <= candidate[0].length) {
     let setSize = 0
     for (let i = 0; i < candSet.length; i++) {
@@ -149,8 +150,8 @@ const r = candidate => {
     console.log("size: " + setSize)
     return
   }
-  candSet.push(candidate)
-  r(generateNextPair(candidate).map(el => el.pairs))
+  pairSet.push(candidate)
+  generatePairSet(generateNextPair(candidate).map(el => el.pairs))
 }
 
 reader.createInterface({
@@ -166,23 +167,26 @@ reader.createInterface({
 .then(count => {
   sup *= count.lines
   let candidate = []
+  //get two-pair candidate from hash table
   for (let i = 0; i < hash.length; i++) {
     if (hash[i].count < sup) {
       continue
     }
     for (let j = 0; j < hash[i].pairs.length; j++) {
       if (hash[i].counts[j] >= sup) {
-        candidate.push(hash[i].pairs[j])
+        candidate.push({count: hash[i].counts[j], pairs: hash[i].pairs[j]})
       }
     }
   }
+  candSet.push(candidate)
+  //get trhee-pair candidate
   let next = null
-  nextPairs = generateNextPair(candidate)
+  nextPairs = generateNextPair(candidate.map(el => el.pairs))
   generateNextCandidate(nextPairs).then(cand => {
     if (cand.length > 0) {
       candSet.push(cand)
-      r(cand)
-      console.log(candSet)
+      generatePairSet(cand.map(el => el.pairs))
+      console.log(limitedSet)
     }
   })
 })

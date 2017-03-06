@@ -6,22 +6,12 @@ const fs = require('fs')
 var sup = parseFloat(process.argv[process.argv.indexOf('-s') + 1])
 var conf = parseFloat(process.argv[process.argv.indexOf('-c') + 1])
 
+var candSet = []
 var limitedSet = []
 var hash = []
 
 for (let i = 0; i < 7; i++) {
   hash.push({ count: 0, pairs: [], counts: [] })
-}
-
-const addData = array => {
-  for (const el of array) {
-    if (holder[el] == undefined) {
-      holder[el] = 1
-    }
-    else {
-      holder[el] += 1
-    }
-  }
 }
 
 var p = 0
@@ -127,7 +117,7 @@ const findLimitedCand = (oldCand, nextPair) => {
     }
   }
   oldCand = oldCand.filter(el => el.count == 0).map(el => el.pairs)
-  limitedSet.push(oldCand)
+  oldCand.forEach(el => limitedSet.push(el))
 }
 
 const generateNextCandidate = pairs => {
@@ -148,6 +138,19 @@ const generateNextCandidate = pairs => {
     }
   })
   .then(count => pairs.filter(el => el.count >= sup).map(el => el.pairs))
+}
+
+const r = candidate => {
+  if (candidate.length == 0 || candidate.length <= candidate[0].length) {
+    let setSize = 0
+    for (let i = 0; i < candSet.length; i++) {
+      setSize += candSet[i].length
+    }
+    console.log("size: " + setSize)
+    return
+  }
+  candSet.push(candidate)
+  r(generateNextPair(candidate).map(el => el.pairs))
 }
 
 reader.createInterface({
@@ -174,9 +177,14 @@ reader.createInterface({
     }
   }
   let next = null
-  console.log(candidate)
-  console.log(next = generateNextPair(candidate))
-  generateNextCandidate(next).then(cand => console.log(cand))
+  nextPairs = generateNextPair(candidate)
+  generateNextCandidate(nextPairs).then(cand => {
+    if (cand.length > 0) {
+      candSet.push(cand)
+      r(cand)
+      console.log(candSet)
+    }
+  })
 })
 .catch(err => {
   console.log(err)

@@ -219,6 +219,7 @@ const findMinConf = () => {
   .then(count => {
     const rules = []
     candSet = [singleSet].concat(candSet)
+    fs.writeFileSync('output.txt', 0)
 
     for (let i = voteLimitedSet.length - 1; i >= 0 ; i--) {
       for (let j = voteLimitedSet[i].pairs.length - 2; j >= 0; j--) {

@@ -13,7 +13,6 @@ for (let i = 0; i < 7; i++) {
   hash.push({ count: 0, pairs: [], counts: [] })
 }
 
-var p = 0
 const forEachTwoPair = (trac, cb) => {
   for (let i = 0; i < trac.length; i++) {
     for (let j = i + 1; j < trac.length; j++) {
@@ -21,7 +20,6 @@ const forEachTwoPair = (trac, cb) => {
       cb(pair)
     }
   }
-  process.stdout.write((p++).toString() + '\r')
 }
 
 const toHash = pair => {
@@ -174,6 +172,7 @@ const generateNextCandidate = pairs => {
 }
 
 const generatePairSet = pair => {
+  console.log('find L' + (pair[0].length + 1))
   const p = generateNextPair(pair.map(el => { return { count: 0, pairs: el }}))
   if (p.length == 0) {
     return
@@ -249,12 +248,14 @@ reader.createInterface({
   input: fs.createReadStream('input.txt')
 })
 .each(line => {
+  process.stdout.write( 'find L2\r')
   let transcation = line.split(' ').filter(el => el !== '')
   forEachTwoPair(transcation, (pair) => {
     toHash(pair)
   })
 })
 .then(count => {
+  console.log('\nfind C2')
   sup *= count.lines
   let candidate = []
   //get two-pair candidate from hash table
@@ -271,9 +272,11 @@ reader.createInterface({
   candSet.push(candidate)
   //get three-pair candidate
   let next = null
+  console.log('find L3')
   nextPairs = generateNextPair(candidate)
   generateNextCandidate(nextPairs).then(cand => {
     if (cand.length > 0) {
+      console.log('find C3')
       candSet.push(cand)
       generatePairSet(cand.map(el => el.pairs))
       return 1
@@ -282,8 +285,10 @@ reader.createInterface({
   })
   .then(flag => {
     if (flag === 1) {
+      console.log('find all candidate')
       findAllCand()
     }
+    console.log('find rules')
     findMinConf()
   })
 })

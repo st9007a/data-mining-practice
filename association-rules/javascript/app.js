@@ -172,7 +172,7 @@ const generateNextCandidate = pairs => {
 }
 
 const generatePairSet = pair => {
-  console.log('find L' + (pair[0].length + 1))
+  console.log('find LN')
   const p = generateNextPair(pair.map(el => { return { count: 0, pairs: el }}))
   if (p.length == 0) {
     return

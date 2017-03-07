@@ -9,3 +9,4 @@
 
 * use `npm i` to install dependencies
 * `node app.js -s [min_sup] -c [min_conf]` to run association rules algorithm 
+**0 < min_sup , min_conf < 1**

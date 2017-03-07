@@ -219,24 +219,28 @@ const findMinConf = () => {
   })
   .then(count => {
     const rules = []
-    console.log(singleSet)
     candSet = [singleSet].concat(candSet)
 
     for (let i = voteLimitedSet.length - 1; i >= 0 ; i--) {
-      for (let j = voteLimitedSet.pairs[i].length - 2; j >= 0; j--) {
+      for (let j = voteLimitedSet[i].pairs.length - 2; j >= 0; j--) {
         for (let k = 0; k < candSet[j].length; k++) {
+          const isSame = candSet[j][k].pairs.length === voteLimitedSet[i].pairs.length && candSet[j][k].pairs.every(function(el, index) { return el === voteLimitedSet[i].pairs[index]})
+          if (isSame) {
+            continue
+          }
           const cond = voteLimitedSet[i].count / candSet[j][k].count
           if (matchRecord(candSet[j][k].pairs, voteLimitedSet[i].pairs) > 0 && cond >= conf) {
-            rules.push({
+            let rule = {
               cond: cond,
               prefix: candSet[j][k].pairs,
-              suffix: voteLimitedSet[i].pairs.filter(el => candSet[j][k].pairs.indexOf(el) >= 0)
-            })
+              suffix: voteLimitedSet[i].pairs.filter(el => candSet[j][k].pairs.indexOf(el) < 0)
+            }
+            fs.appendFileSync('output.txt', `{${rule.prefix.join()}} => {${rule.suffix.join()}} (${rule.cond})`)
           }
         }
       }
     }
-    console.log(rules)
+    return rules
   })
 }
 

@@ -235,7 +235,7 @@ const findMinConf = () => {
               prefix: candSet[j][k].pairs,
               suffix: voteLimitedSet[i].pairs.filter(el => candSet[j][k].pairs.indexOf(el) < 0)
             }
-            fs.appendFileSync('output.txt', `{${rule.prefix.join()}} => {${rule.suffix.join()}} (${rule.cond})`)
+            fs.appendFileSync('output.txt', `{${rule.prefix.join()}} => {${rule.suffix.join()}} (${rule.cond})\n`)
           }
         }
       }

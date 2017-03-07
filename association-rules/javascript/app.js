@@ -120,7 +120,7 @@ const findLimitedCand = (oldCand, nextPair) => {
       }
     }
   }
-  oldCand = oldCand.filter(el => el.vote == 0).map(el => el.paircv)
+  oldCand = oldCand.filter(el => el.vote == 0).map(el => el.pairs)
   oldCand.forEach(el => limitedSet.push(el))
 }
 
@@ -150,6 +150,7 @@ const findAllCand = () => {
     }
     candSet = candSet.concat(pairSet)
   })
+
 }
 
 const generateNextCandidate = pairs => {
@@ -183,16 +184,25 @@ const generatePairSet = pair => {
 }
 
 const findMinConf = () => {
+  let singleSet = []
   return reader.createInterface({
     terminal: false,
     input: fs.createReadStream('input.txt')
   })
   .each(line => {
     //find single set from level 2 limited set
-    let singleSet = []
-    const level2LimitedSet = limitedSet[0]
+    const level2LimitedSet = limitedSet.filter(el => el.length == 2)
+    for (const l of level2LimitedSet) {
+      for (const item of l) {
+        if (singleSet.filter(el => el === item).length > 0) {
+          continue
+        }
+        singleSet.push(item)
+      }
+    }
   })
   .then(count => {
+    console.log(singleSet)
   })
 }
 
@@ -236,6 +246,7 @@ reader.createInterface({
     if (flag === 1) {
       findAllCand()
     }
+    findMinConf()
   })
 })
 .catch(err => {

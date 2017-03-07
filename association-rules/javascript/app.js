@@ -1,5 +1,4 @@
 const reader = require('readline-promise')
-const Promise = require('promise')
 const fs = require('fs')
 
 
@@ -121,7 +120,7 @@ const findLimitedCand = (oldCand, nextPair) => {
       }
     }
   }
-  oldCand = oldCand.filter(el => el.vote == 0).map(el => el.pairs)
+  oldCand = oldCand.filter(el => el.vote == 0).map(el => el.paircv)
   oldCand.forEach(el => limitedSet.push(el))
 }
 
@@ -183,6 +182,20 @@ const generatePairSet = pair => {
   generatePairSet(p)
 }
 
+const findMinConf = () => {
+  return reader.createInterface({
+    terminal: false,
+    input: fs.createReadStream('input.txt')
+  })
+  .each(line => {
+    //find single set from level 2 limited set
+    let singleSet = []
+    const level2LimitedSet = limitedSet[0]
+  })
+  .then(count => {
+  })
+}
+
 reader.createInterface({
   terminal: false,
   input: fs.createReadStream('input.txt')
@@ -222,7 +235,6 @@ reader.createInterface({
   .then(flag => {
     if (flag === 1) {
       findAllCand()
-      console.log(candSet)
     }
   })
 })

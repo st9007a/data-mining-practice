@@ -1,7 +1,6 @@
 const reader = require('readline-promise')
 const fs = require('fs')
 
-
 var sup = parseFloat(process.argv[process.argv.indexOf('-s') + 1])
 var conf = parseFloat(process.argv[process.argv.indexOf('-c') + 1])
 
@@ -191,13 +190,12 @@ const findMinConf = () => {
   // find single set from level 2 limited set
   for (const l of level2LimitedSet) {
     for (const item of l) {
-      if (singleSet.filter(el => el.pairs === item).length > 0) {
+      if (singleSet.filter(el => el.pairs[0] === item).length > 0) {
         continue
       }
-      singleSet.push({count: 0, pairs: item})
+      singleSet.push({count: 0, pairs: [item]})
     }
   }
-  console.log(singleSet)
   return reader.createInterface({
     terminal: false,
     input: fs.createReadStream('input.txt')
@@ -213,14 +211,32 @@ const findMinConf = () => {
 
     // get count of singleSet
     for (const s of singleSet) {
-      if (transcation.indexOf(s.pairs) >= 0) {
+      if (transcation.indexOf(s.pairs[0]) >= 0) {
         s.count++
       }
     }
 
   })
   .then(count => {
+    const rules = []
     console.log(singleSet)
+    candSet = [singleSet].concat(candSet)
+
+    for (let i = voteLimitedSet.length - 1; i >= 0 ; i--) {
+      for (let j = voteLimitedSet.pairs[i].length - 2; j >= 0; j--) {
+        for (let k = 0; k < candSet[j].length; k++) {
+          const cond = voteLimitedSet[i].count / candSet[j][k].count
+          if (matchRecord(candSet[j][k].pairs, voteLimitedSet[i].pairs) > 0 && cond >= conf) {
+            rules.push({
+              cond: cond,
+              prefix: candSet[j][k].pairs,
+              suffix: voteLimitedSet[i].pairs.filter(el => candSet[j][k].pairs.indexOf(el) >= 0)
+            })
+          }
+        }
+      }
+    }
+    console.log(rules)
   })
 }
 

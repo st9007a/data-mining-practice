@@ -185,21 +185,39 @@ const generatePairSet = pair => {
 
 const findMinConf = () => {
   let singleSet = []
+  let voteLimitedSet = limitedSet.map(el => { return { count: 0, pairs: el } })
+  const level2LimitedSet = limitedSet.filter(el => el.length == 2)
+
+  // find single set from level 2 limited set
+  for (const l of level2LimitedSet) {
+    for (const item of l) {
+      if (singleSet.filter(el => el.pairs === item).length > 0) {
+        continue
+      }
+      singleSet.push({count: 0, pairs: item})
+    }
+  }
+  console.log(singleSet)
   return reader.createInterface({
     terminal: false,
     input: fs.createReadStream('input.txt')
   })
   .each(line => {
-    //find single set from level 2 limited set
-    const level2LimitedSet = limitedSet.filter(el => el.length == 2)
-    for (const l of level2LimitedSet) {
-      for (const item of l) {
-        if (singleSet.filter(el => el === item).length > 0) {
-          continue
-        }
-        singleSet.push(item)
+    let transcation = line.split(' ').filter(el => el != '')
+    // get count of limitedSet
+    for (const v of voteLimitedSet) {
+      if (matchRecord(v.pairs, transcation) > 0) {
+        v.count++
       }
     }
+
+    // get count of singleSet
+    for (const s of singleSet) {
+      if (transcation.indexOf(s.pairs) >= 0) {
+        s.count++
+      }
+    }
+
   })
   .then(count => {
     console.log(singleSet)

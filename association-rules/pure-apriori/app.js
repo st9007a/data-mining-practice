@@ -26,8 +26,11 @@ const generateL = cand => {
   let vote = cand[0].candidate.length
 
   for (const c of cand) {
-    if (itemSet.indexOf(c.candidate) < 0) {
-      itemSet.push(c.candidate)
+    for (const i of c.candidate) {
+      if (itemSet.filter(el => el === i).length > 0) {
+        continue
+      }
+      itemSet.push(i)
     }
   }
 
@@ -37,7 +40,7 @@ const generateL = cand => {
       notSet = notSet.filter(el => el !== c)
     }
     for (const n of notSet) {
-      nextL.push({ vote: 0, candidate: cand[i].candidate.concat(n)})
+      nextL.push({ vote: 0, candidate: cand[i].candidate.concat(n).sort((a, b) => parseInt(a) - parseInt(b))})
     }
   }
 
@@ -100,13 +103,13 @@ const findLimitedSet = (oldCand, nextL) => {
   oldCand.forEach(el => limitedSet.push(el))
 }
 
-const geneator = cand => {
+const miningLimitedSet = cand => {
   const nl = generateL(cand)
   if (nl.length == 0) {
-    candSet.forEach(el => console.log(el))
+    //candSet.forEach(el => console.log(el))
     return null
   }
-  return generateC(nl).then(cand => geneator(cand))
+  return generateC(nl).then(cand => miningLimitedSet(cand))
 }
 
 reader.createInterface({
@@ -132,7 +135,7 @@ reader.createInterface({
 .then(count => {
   sup *= count.lines
   c1 = c1.filter(el => el.count >= sup)
-  geneator(c1)
+  miningLimitedSet(c1)
 })
 .catch(err => console.log(err))
 

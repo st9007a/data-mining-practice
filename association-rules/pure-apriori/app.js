@@ -112,6 +112,26 @@ const miningLimitedSet = cand => {
   return generateC(nl).then(cand => miningLimitedSet(cand))
 }
 
+const findAllRules = () => {
+  fs.writeFileSync('output.txt', '')
+  console.log(candSet[0])
+  for (const l of limitedSet) {
+    for (let i = l.candidate.length - 2; i >= 0; i--) {
+      for (let j = 0; j < candSet[i].length; j++) {
+        let condition = l.count / candSet[i][j].count
+        if (matchSubSet(candSet[i][j].candidate, l.candidate) > 0 && condition >= conf) {
+          let rule = {
+            cond: condition,
+            prefix: candSet[i][j].candidate,
+            suffix: l.candidate.filter(el => candSet[i][j].candidate.indexOf(el) < 0)
+          }
+          fs.appendFileSync('output.txt', `{${rule.prefix.join()}} => {${rule.suffix.join()}} (${rule.cond})\n`)
+        }
+      }
+    }
+  }
+}
+
 reader.createInterface({
   terminal: false,
   input: fs.createReadStream('input.txt')
@@ -135,7 +155,10 @@ reader.createInterface({
 .then(count => {
   sup *= count.lines
   c1 = c1.filter(el => el.count >= sup)
-  miningLimitedSet(c1)
+  candSet.push(c1)
+  miningLimitedSet(c1).then(() => {
+    findAllRules()
+  })
 })
 .catch(err => console.log(err))
 

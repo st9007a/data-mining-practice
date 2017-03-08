@@ -6,6 +6,7 @@ var conf = parseFloat(process.argv[process.argv.indexOf('-c') + 1])
 
 let c1 = []
 let limitedSet = []
+let candSet = []
 
 const matchSubSet = (subSet, superSet) => {
   let check = 1
@@ -25,7 +26,7 @@ const generateL = cand => {
   let vote = cand[0].candidate.length
 
   for (const c of cand) {
-    if (itemSet.indexOf(c) < 0) {
+    if (itemSet.indexOf(c.candidate) < 0) {
       itemSet.push(c.candidate)
     }
   }
@@ -75,7 +76,11 @@ const generateC = l => {
       }
     }
   })
-  .then(count => l.filter(el => el.count >= sup))
+  .then(count => {
+    const nc = l.filter(el => el.count >= sup)
+    candSet.push(nc)
+    return nc
+  })
 }
 
 const findLimitedSet = (oldCand, nextL) => {
@@ -91,8 +96,17 @@ const findLimitedSet = (oldCand, nextL) => {
       }
     }
   }
-  oldCand = oldCand.filter(el => el.vote == 0).map(el => { return {count: el.count, candidate: el.candidate} })
+  oldCand = oldCand.filter(el => el.vote == 0)
   oldCand.forEach(el => limitedSet.push(el))
+}
+
+const geneator = cand => {
+  const nl = generateL(cand)
+  if (nl.length == 0) {
+    candSet.forEach(el => console.log(el))
+    return null
+  }
+  return generateC(nl).then(cand => geneator(cand))
 }
 
 reader.createInterface({
@@ -118,10 +132,7 @@ reader.createInterface({
 .then(count => {
   sup *= count.lines
   c1 = c1.filter(el => el.count >= sup)
-
-  const l2 = generateL(c1)
-  generateC(l2)
-  .then(c => console.log(c))
+  geneator(c1)
 })
 .catch(err => console.log(err))
 

@@ -257,7 +257,7 @@ reader.createInterface({
   })
 })
 .then(count => {
-  console.log('\nfind C2')
+  console.log('find C2')
   sup *= count.lines
   let candidate = []
   //get two-pair candidate from hash table

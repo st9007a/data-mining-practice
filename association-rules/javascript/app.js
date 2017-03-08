@@ -244,12 +244,13 @@ const findMinConf = () => {
   })
 }
 
+console.log('start : ' + (new Date()).toString())
+console.log('find L2')
 reader.createInterface({
   terminal: false,
   input: fs.createReadStream('input.txt')
 })
 .each(line => {
-  process.stdout.write( 'find L2\r')
   let transcation = line.split(' ').filter(el => el !== '')
   forEachTwoPair(transcation, (pair) => {
     toHash(pair)
@@ -291,6 +292,7 @@ reader.createInterface({
     }
     console.log('find rules')
     findMinConf()
+    console.log('end : ' + (new Date()).toString())
   })
 })
 .catch(err => {

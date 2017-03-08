@@ -13,6 +13,7 @@ for (let i = 0; i < 7; i++) {
   hash.push({ count: 0, pairs: [], counts: [] })
 }
 
+var p = 0
 const forEachTwoPair = (trac, cb) => {
   for (let i = 0; i < trac.length; i++) {
     for (let j = i + 1; j < trac.length; j++) {
@@ -20,6 +21,7 @@ const forEachTwoPair = (trac, cb) => {
       cb(pair)
     }
   }
+  process.stdout.write((p++).toString() + '\r')
 }
 
 const toHash = pair => {

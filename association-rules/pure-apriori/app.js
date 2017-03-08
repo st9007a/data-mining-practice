@@ -58,16 +58,24 @@ const generateL = cand => {
 
   nextL = nextL.filter(el => el .vote > vote).map(el => el.candidate)
   findLimitedSet(cand, nextL)
+  return nextL
 }
 
 const generateC = l => {
+  l = l.map(el => { return {count: 0, candidate: el} })
   return reader.createInterface({
     terminal: false,
     input: fs.createReadStream('input.txt')
   })
   .each(line => {
     let tran = parseTransaction(line)
+    for (const item of l) {
+      if (matchSubSet(item.candidate, tran) > 0) {
+        item.count++
+      }
+    }
   })
+  .then(count => l.filter(el => el.count >= sup))
 }
 
 const findLimitedSet = (oldCand, nextL) => {
@@ -110,8 +118,10 @@ reader.createInterface({
 .then(count => {
   sup *= count.lines
   c1 = c1.filter(el => el.count >= sup)
-  limited.push(c1)
-  generateL(c1)
+
+  const l2 = generateL(c1)
+  generateC(l2)
+  .then(c => console.log(c))
 })
 .catch(err => console.log(err))
 

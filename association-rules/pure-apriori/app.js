@@ -21,6 +21,7 @@ const parseTransaction = data => {
 }
 
 const generateL = cand => {
+  if (cand.length != 0) console.log('find L' + (cand[0].candidate.length + 1))
   let nextL = []
   let itemSet = []
   let vote = cand[0].candidate.length
@@ -66,6 +67,7 @@ const generateL = cand => {
 }
 
 const generateC = l => {
+  if (l.length != 0) console.log('find C' + l[0].length)
   l = l.map(el => { return {count: 0, candidate: el} })
   return reader.createInterface({
     terminal: false,
@@ -114,7 +116,6 @@ const miningLimitedSet = cand => {
 
 const findAllRules = () => {
   fs.writeFileSync('output.txt', '')
-  console.log(candSet[0])
   for (const l of limitedSet) {
     for (let i = l.candidate.length - 2; i >= 0; i--) {
       for (let j = 0; j < candSet[i].length; j++) {
@@ -132,6 +133,8 @@ const findAllRules = () => {
   }
 }
 
+console.log('start: ' + (new Date()).toString())
+console.log('find C1')
 reader.createInterface({
   terminal: false,
   input: fs.createReadStream('input.txt')
@@ -148,7 +151,7 @@ reader.createInterface({
       }
     }
     if (!isExist) {
-      c1.push({count: 0, candidate: [p]})
+      c1.push({count: 1, candidate: [p]})
     }
   }
 })
@@ -157,7 +160,9 @@ reader.createInterface({
   c1 = c1.filter(el => el.count >= sup)
   candSet.push(c1)
   miningLimitedSet(c1).then(() => {
+    console.log('find rules')
     findAllRules()
+    console.log('end: ' + (new Date()).toString())
   })
 })
 .catch(err => console.log(err))

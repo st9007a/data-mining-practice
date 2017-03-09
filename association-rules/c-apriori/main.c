@@ -14,8 +14,6 @@ int main(int argc, char *argv[]) {
   size_t len = 0;
   ssize_t read;
 
-  char** transaction;
-
   int i;
   for (i = 0; i < argc; i++) {
     if (strcmp("-s", argv[i]) == 0 && i + 1 < argc) {
@@ -35,15 +33,10 @@ int main(int argc, char *argv[]) {
 
   i = 0;
   while ((read = getline(&line, &len, input_file)) != -1) {
+    char** transaction;
     line[strlen(line) - 1] = '\0';
-    printf("%s\n", line);
     transaction = parse_transaction(line);
     i++;
-    int j;
-    for (j = 0;transaction[j]!=NULL; j++) {
-      printf("%s ", transaction[j]);
-    }
-    printf("\n");
   }
 
   sup *= i;
@@ -55,27 +48,32 @@ int main(int argc, char *argv[]) {
 
 char** parse_transaction(char* line) {
   char** tran;
-  char* line_cp = (char*)malloc(strlen(line) + 1);
+  char* line_cp1 = (char*)malloc(strlen(line) + 1);
+  char* line_cp2 = (char*)malloc(strlen(line) + 1);
   char* item;
   int i = 0;
-  strcpy(line_cp, line);
 
-  item = strtok(line_cp, " ");
+  strcpy(line_cp1, line);
+  strcpy(line_cp2, line);
+
+  item = strtok(line_cp1, " ");
   while (item != NULL) {
     i++;
     item = strtok(NULL, " ");
   }
+
   tran = (char**)malloc(i * sizeof(char*));
 
-  line_cp = (char*)realloc(line, strlen(line) + 1);
-  item = strtok(line_cp, " ");
+  item = strtok(line_cp2, " ");
   i = 0;
   while (item != NULL) {
-    tran[i] = (char*)malloc(strlen(item) + 1);
-    strcpy(tran[i], item);
-    i++;
-    strtok(NULL, " ");
+    tran[i++] = item;
+    item = strtok(NULL, " ");
   }
+
+  free(line_cp1);
+  free(line_cp2);
+  free(item);
 
   return tran;
 }

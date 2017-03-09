@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  inputFile = fopen("input.txt");
+  inputFile = fopen("input.txt", "r");
   if (inputFile == NULL) {
     exit(EXIT_FAILURE);
   }

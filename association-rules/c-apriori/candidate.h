@@ -6,4 +6,6 @@ struct candidate {
   int count;
 };
 
+char** generateL(struct candidate*);
+
 #endif

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-char** parse_transaction(char*);
+char** parse_transaction(char*, int*);
 
 int main(int argc, char *argv[]) {
 
@@ -17,11 +17,9 @@ int main(int argc, char *argv[]) {
   int i;
   for (i = 0; i < argc; i++) {
     if (strcmp("-s", argv[i]) == 0 && i + 1 < argc) {
-      printf("%s\n", argv[i + 1]);
       sup = atof(argv[i + 1]);
     }
     if (strcmp("-c", argv[i]) == 0 && i + 1 < argc) {
-      printf("%s\n", argv[i + 1]);
       conf = atof(argv[i + 1]);
     }
   }
@@ -34,9 +32,11 @@ int main(int argc, char *argv[]) {
   i = 0;
   while ((read = getline(&line, &len, input_file)) != -1) {
     char** transaction;
+    int data_length;
     line[strlen(line) - 1] = '\0';
-    transaction = parse_transaction(line);
+    transaction = parse_transaction(line, &data_length);
     i++;
+    free(transaction);
   }
 
   sup *= i;
@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
-char** parse_transaction(char* line) {
+char** parse_transaction(char* line, int* length) {
   char** tran;
   char* line_cp1 = (char*)malloc(strlen(line) + 1);
   char* line_cp2 = (char*)malloc(strlen(line) + 1);
@@ -70,6 +70,8 @@ char** parse_transaction(char* line) {
     tran[i++] = item;
     item = strtok(NULL, " ");
   }
+
+  *length = i;
 
   free(line_cp1);
   free(line_cp2);

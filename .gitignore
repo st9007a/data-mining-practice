@@ -1,0 +1,7 @@
+input*
+output*
+node_modules/
+tmp/
+do
+debug
+*.swp

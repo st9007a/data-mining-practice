@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
   i = 0;
   while ((read = getline(&line, &len, input_file)) != -1) {
     line[strlen(line) - 1] = '\0';
-    printf("???");
+    printf("%s\n", line);
     transaction = parse_transaction(line);
     i++;
     int j;
@@ -61,7 +61,6 @@ char** parse_transaction(char* line) {
   strcpy(line_cp, line);
 
   item = strtok(line_cp, " ");
-  printf("0");
   while (item != NULL) {
     i++;
     item = strtok(NULL, " ");
@@ -71,14 +70,12 @@ char** parse_transaction(char* line) {
   line_cp = (char*)realloc(line, strlen(line) + 1);
   item = strtok(line_cp, " ");
   i = 0;
-  printf("1");
   while (item != NULL) {
     tran[i] = (char*)malloc(strlen(item) + 1);
     strcpy(tran[i], item);
     i++;
     strtok(NULL, " ");
   }
-  printf("2");
 
   return tran;
 }

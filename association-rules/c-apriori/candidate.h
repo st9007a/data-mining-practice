@@ -6,6 +6,13 @@ struct candidate {
   int count;
 };
 
-char** generateL(struct candidate*);
+struct candidateTable {
+  struct candidate* candidate;
+  unsigned int length;
+  unsigned int size;
+};
+
+void addNewCandidate(struct candidateTable*, struct candidate*);
+char** generateL(struct candidateTable*);
 
 #endif

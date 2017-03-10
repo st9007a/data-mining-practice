@@ -4,6 +4,7 @@
 struct candidate {
   char** cList;
   int count;
+  int level;
 };
 
 struct candidateTable {
@@ -13,7 +14,7 @@ struct candidateTable {
 };
 
 void initCandidateTable(struct candidateTable*, unsigned int);
-void addNewCandidate(struct candidateTable*, struct candidate*);
-char** generateL(struct candidateTable*);
+void addNewCandidate(struct candidateTable*, struct candidate);
+struct stringArray generateL(struct candidateTable*);
 
 #endif

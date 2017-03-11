@@ -12,11 +12,11 @@ void push(struct stringArray* sArr, char* item) {
   sArr->array[sArr->length++] = item;
 
 }
-void filter_item(struct stringArray* sArr, int (*checkFunction)(char*)) {
+void filter_item(struct stringArray* sArr, char* target, int (*checkFunction)(char*, char*)) {
   int i, j;
   int len = 0;
   for (i = 0; sArr->array[i]; i++) {
-    if (checkFunction(sArr->array[i]) == 1) {
+    if (checkFunction(sArr->array[i], target) == 1) {
       for (j = i; sArr->array[j]; j++) {
         sArr->array[j] = sArr->array[j + 1];
         len++;

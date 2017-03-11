@@ -8,6 +8,6 @@ struct stringArray {
 };
 
 void push(struct stringArray*, char*);
-void filter_item(struct stringArray*, int(char*));
+void filter_item(struct stringArray*, char*, int(char*, char*));
 
 #endif

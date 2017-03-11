@@ -2,34 +2,44 @@
 #include <stdlib.h>
 #include <string.h>
 #include "candidate.h"
+#include "checkFunction.h"
 #include "charArrLib.c"
 
-void initCandidateTable(struct candidateTable* cTable, unsigned int size) {
-  cTable->size = size;
-  cTable->length = 0;
-  cTable->candidate = (struct candidate*)malloc(sizeof(struct candidate) * size);
+void init_candidate_table(struct candidate_table* c_table, unsigned int size) {
+  c_table->size = size;
+  c_table->length = 0;
+  c_table->candidate = (struct candidate*)malloc(sizeof(struct candidate) * size);
 }
 
-void addNewCandidate(struct candidateTable* cTable, struct candidate candidate) {
-  if (cTable->length == cTable->size) {
-    cTable->size *= 2;
-    cTable->candidate = (struct candidate*)realloc(cTable->candidate, cTable->size * sizeof(struct candidate));
+void add_new_candidate(struct candidate_table* c_table, struct candidate candidate) {
+  if (c_table->length == c_table->size) {
+    c_table->size *= 2;
+    c_table->candidate = (struct candidate*)realloc(c_table->candidate, c_table->size * sizeof(struct candidate));
   }
-  cTable->candidate[cTable->length++] = candidate;
+  c_table->candidate[c_table->length++] = candidate;
 }
 
-struct stringArray generateL(struct candidateTable* cTable) {
-  struct stringArray nextL;
-  struct stringArray itemSet;
-  int vote = cTable->candidate[0].level;
+int check_same(char* a, char* b) {
+  return strcmp(a, b) == 0 ? 1 : 0;
+}
+
+struct stringArray generate_l(struct candidate_table* c_table) {
+  struct stringArray next_l;
+  struct stringArray item_set;
+  int vote = c_table->candidate[0].level;
   unsigned int i, j;
 
-  for (i = 0; i < cTable->length; i++) {
-    for (j = 0; cTable->candidate[i].cList[j]; j++) {
-      if (itemSet.length > 0) {
+  for (i = 0; i < c_table->length; i++) {
+    for (j = 0; c_table->candidate[i].c_list[j]; j++) {
+      filter_item(&item_set, c_table->candidate[i].c_list[j], &check_same);
+      if (item_set.length > 0) {
+        continue;
       }
+      push(&item_set, c_table->candidate[i].c_list[j]);
     }
   }
 
-  return nextL;
+
+
+  return next_l;
 }

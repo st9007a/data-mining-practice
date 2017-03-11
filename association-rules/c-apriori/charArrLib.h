@@ -1,13 +1,13 @@
 #ifndef CHARARRLIB
 #define CHARARRLIB
 
-struct stringArray {
+struct string_array {
   char** array;
   unsigned int length;
   unsigned int size;
 };
 
-void push(struct stringArray*, char*);
-void filter_item(struct stringArray*, char*, int(char*, char*));
+void push(struct string_array*, char*);
+void filter_item(struct string_array*, char*, int(char*, char*));
 
 #endif

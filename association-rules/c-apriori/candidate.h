@@ -15,6 +15,6 @@ struct candidate_table {
 
 void init_candidate_table(struct candidate_table*, unsigned int);
 void add_new_candidate(struct candidate_table*, struct candidate);
-struct stringArray generate_l(struct candidate_table*);
+struct string_array generate_l(struct candidate_table*);
 
 #endif

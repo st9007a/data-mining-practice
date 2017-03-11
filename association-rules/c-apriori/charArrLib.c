@@ -4,24 +4,24 @@
 #include "charArrLib.h"
 
 
-void push(struct stringArray* sArr, char* item) {
-  if (sArr->size == sArr->length) {
-    sArr->size *= 2;
-    sArr->array = (char**)realloc(sArr->array, sArr->size * sizeof(char*));
+void push(struct string_array* s_arr, char* item) {
+  if (s_arr->size == s_arr->length) {
+    s_arr->size *= 2;
+    s_arr->array = (char**)realloc(s_arr->array, s_arr->size * sizeof(char*));
   }
-  sArr->array[sArr->length++] = item;
+  s_arr->array[s_arr->length++] = item;
 
 }
-void filter_item(struct stringArray* sArr, char* target, int (*checkFunction)(char*, char*)) {
+void filter_item(struct string_array* s_arr, char* target, int (*checkFunction)(char*, char*)) {
   int i, j;
   int len = 0;
-  for (i = 0; sArr->array[i]; i++) {
-    if (checkFunction(sArr->array[i], target) == 1) {
-      for (j = i; sArr->array[j]; j++) {
-        sArr->array[j] = sArr->array[j + 1];
+  for (i = 0; s_arr->array[i]; i++) {
+    if (checkFunction(s_arr->array[i], target) == 1) {
+      for (j = i; s_arr->array[j]; j++) {
+        s_arr->array[j] = s_arr->array[j + 1];
         len++;
       }
     }
   }
-  sArr->array = (char**)realloc(sArr->array, len * sizeof(char*));
+  s_arr->array = (char**)realloc(s_arr->array, len * sizeof(char*));
 }

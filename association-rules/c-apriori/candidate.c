@@ -23,9 +23,9 @@ int check_same(char* a, char* b) {
   return strcmp(a, b) == 0 ? 1 : 0;
 }
 
-struct stringArray generate_l(struct candidate_table* c_table) {
-  struct stringArray next_l;
-  struct stringArray item_set;
+struct string_array generate_l(struct candidate_table* c_table) {
+  struct string_array next_l;
+  struct string_array item_set;
   int vote = c_table->candidate[0].level;
   unsigned int i, j;
 
@@ -37,6 +37,10 @@ struct stringArray generate_l(struct candidate_table* c_table) {
       }
       push(&item_set, c_table->candidate[i].c_list[j]);
     }
+  }
+
+  for (i = 0; i < c_table->length; i++) {
+    struct string_array not_set = item_set;
   }
 
 

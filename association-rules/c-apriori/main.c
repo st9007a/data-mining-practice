@@ -43,16 +43,15 @@ int main(int argc, char *argv[]) {
     for (j = 0; transaction[j]; j++) {
       int is_exist = 0;
       for (k = 0; k < (int)c1.length; k++) {
-        if (strcmp(c1.candidate[k].c_list->array[0], transaction[j]) == 0) {
+        if (strcmp(c1.candidate[k].c_list.array[0], transaction[j]) == 0) {
           c1.candidate[i].count++;
           is_exist = 1;
           break;
         }
       }
-
       if (!is_exist) {
         struct candidate new_cand;
-        init_string_array(new_cand.c_list, 1);
+        init_string_array(&new_cand.c_list, 1);
         new_cand.count = 1;
         new_cand.level = 1;
         add_new_candidate(&c1, new_cand);

@@ -34,19 +34,19 @@ struct string_array generate_l(struct candidate_table* c_table) {
   size_t i, j;
 
   for (i = 0; i < c_table->length; i++) {
-    for (j = 0; c_table->candidate[i].c_list->array[j]; j++) {
-      filter_item(&item_set, c_table->candidate[i].c_list->array[j], &check_same);
+    for (j = 0; c_table->candidate[i].c_list.array[j]; j++) {
+      filter_item(&item_set, c_table->candidate[i].c_list.array[j], &check_same);
       if (item_set.length > 0) {
         continue;
       }
-      push(&item_set, c_table->candidate[i].c_list->array[j]);
+      push(&item_set, c_table->candidate[i].c_list.array[j]);
     }
   }
 
   for (i = 0; i < c_table->length; i++) {
     struct string_array not_set = item_set;
-    for (j = 0; c_table->candidate[i].c_list->array[j]; j++) {
-      filter_item(&not_set, c_table->candidate[i].c_list->array[j], &check_diff);
+    for (j = 0; c_table->candidate[i].c_list.array[j]; j++) {
+      filter_item(&not_set, c_table->candidate[i].c_list.array[j], &check_diff);
     }
     for (j = 0; j < not_set.length; j++) {
       

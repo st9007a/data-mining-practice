@@ -5,7 +5,7 @@
 #include "charArrLib.h"
 
 struct candidate{
-  struct string_array* c_list;
+  struct string_array c_list;
   int count;
   int level;
 };

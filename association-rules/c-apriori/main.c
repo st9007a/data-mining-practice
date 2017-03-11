@@ -15,7 +15,9 @@ int main(int argc, char *argv[]) {
   size_t len = 0;
   ssize_t read;
 
-  int i;
+  struct candidate_table c1;
+  int i, j, k;
+
   for (i = 0; i < argc; i++) {
     if (strcmp("-s", argv[i]) == 0 && i + 1 < argc) {
       sup = atof(argv[i + 1]);
@@ -30,12 +32,19 @@ int main(int argc, char *argv[]) {
     exit(EXIT_FAILURE);
   }
 
+  init_candidate_table(&c1, 1);
   i = 0;
   while ((read = getline(&line, &len, input_file)) != -1) {
     char** transaction;
     int data_length;
     line[strlen(line) - 1] = '\0';
     transaction = parse_transaction(line, &data_length);
+    for (j = 0; transaction[j]; j++) {
+      int is_exist = 0;
+      for (k = 0; k < c1.length; k++) {
+        if (cl.candidate->c_list[k])
+      }
+    }
     i++;
     free(transaction);
   }

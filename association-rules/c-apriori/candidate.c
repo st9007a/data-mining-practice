@@ -5,6 +5,14 @@
 #include "checkFunction.h"
 #include "charArrLib.c"
 
+int check_same(char* a, char* b) {
+  return !(strcmp(a, b));
+}
+
+int check_diff(char* a, char* b) {
+  return strcmp(a, b);
+}
+
 void init_candidate_table(struct candidate_table* c_table, unsigned int size) {
   c_table->size = size;
   c_table->length = 0;
@@ -19,10 +27,6 @@ void add_new_candidate(struct candidate_table* c_table, struct candidate candida
   c_table->candidate[c_table->length++] = candidate;
 }
 
-int check_same(char* a, char* b) {
-  return strcmp(a, b) == 0 ? 1 : 0;
-}
-
 struct string_array generate_l(struct candidate_table* c_table) {
   struct string_array next_l;
   struct string_array item_set;
@@ -30,17 +34,23 @@ struct string_array generate_l(struct candidate_table* c_table) {
   unsigned int i, j;
 
   for (i = 0; i < c_table->length; i++) {
-    for (j = 0; c_table->candidate[i].c_list[j]; j++) {
-      filter_item(&item_set, c_table->candidate[i].c_list[j], &check_same);
+    for (j = 0; c_table->candidate[i].c_list->array[j]; j++) {
+      filter_item(&item_set, c_table->candidate[i].c_list->array[j], &check_same);
       if (item_set.length > 0) {
         continue;
       }
-      push(&item_set, c_table->candidate[i].c_list[j]);
+      push(&item_set, c_table->candidate[i].c_list->array[j]);
     }
   }
 
   for (i = 0; i < c_table->length; i++) {
     struct string_array not_set = item_set;
+    for (j = 0; c_table->candidate[i].c_list->array[j]; j++) {
+      filter_item(&not_set, c_table->candidate[i].c_list->array[j], &check_diff);
+    }
+    for (j = 0; j < not_set.length; j++) {
+      
+    }
   }
 
 

@@ -1,8 +1,10 @@
 #ifndef CANDIDATE
 #define CANDIDATE
 
+#include "charArrLib.h"
+
 struct candidate{
-  char** c_list;
+  struct string_array* c_list;
   int count;
   int level;
 };

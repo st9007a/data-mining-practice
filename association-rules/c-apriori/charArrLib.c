@@ -3,6 +3,11 @@
 #include <string.h>
 #include "charArrLib.h"
 
+void init_string_array(struct string_array* s_arr, size_t size) {
+  s_arr->size = size;
+  s_arr->length = 0;
+  s_arr->array = (char**)malloc(sizeof(char*) * size);
+}
 
 void push(struct string_array* s_arr, char* item) {
   if (s_arr->size == s_arr->length) {

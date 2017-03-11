@@ -13,7 +13,7 @@ int check_diff(char* a, char* b) {
   return strcmp(a, b);
 }
 
-void init_candidate_table(struct candidate_table* c_table, unsigned int size) {
+void init_candidate_table(struct candidate_table* c_table, size_t size) {
   c_table->size = size;
   c_table->length = 0;
   c_table->candidate = (struct candidate*)malloc(sizeof(struct candidate) * size);
@@ -31,7 +31,7 @@ struct string_array generate_l(struct candidate_table* c_table) {
   struct string_array next_l;
   struct string_array item_set;
   int vote = c_table->candidate[0].level;
-  unsigned int i, j;
+  size_t i, j;
 
   for (i = 0; i < c_table->length; i++) {
     for (j = 0; c_table->candidate[i].c_list->array[j]; j++) {
@@ -52,8 +52,6 @@ struct string_array generate_l(struct candidate_table* c_table) {
       
     }
   }
-
-
 
   return next_l;
 }

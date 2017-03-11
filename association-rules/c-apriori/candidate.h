@@ -1,6 +1,7 @@
 #ifndef CANDIDATE
 #define CANDIDATE
 
+#include <stdlib.h>
 #include "charArrLib.h"
 
 struct candidate{
@@ -11,11 +12,11 @@ struct candidate{
 
 struct candidate_table {
   struct candidate* candidate;
-  unsigned int length;
-  unsigned int size;
+  size_t length;
+  size_t size;
 };
 
-void init_candidate_table(struct candidate_table*, unsigned int);
+void init_candidate_table(struct candidate_table*, size_t);
 void add_new_candidate(struct candidate_table*, struct candidate);
 struct string_array generate_l(struct candidate_table*);
 

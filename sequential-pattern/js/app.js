@@ -3,8 +3,8 @@ const reader = require('readline-promise')
 
 let sup = parseFloat(process.argv[process.argv.indexOf('-s') + 1])
 
-const sequenceTable = []
-const c1 = []
+let sequenceTable = []
+let itemSet = []
 
 const parseLine = tran => {
   let rawData = tran.split(' ').filter(el => el !== '')
@@ -56,7 +56,7 @@ const findSubPattern = pattern => {
     return
   }
   let isExist = false
-  for (const c of c1) {
+  for (const c of itemSet) {
     if (isSameSet(pattern, c.element)) {
       c.sup++
       isExist = true
@@ -64,7 +64,7 @@ const findSubPattern = pattern => {
     }
   }
   if (!isExist) {
-    c1.push({ element: pattern, sup: 1 })
+    itemSet.push({ element: pattern, sup: 1 })
   }
   for (let i = 0; i < pattern.length; i++) {
     findSubPattern(pattern.filter((el, idx) => i !== idx))
@@ -81,11 +81,36 @@ reader.createInterface({
 })
 .then(count => {
   sup *= count.lines
+  //find item set
   for (let i = 0; i < sequenceTable.length; i++) {
     for (const item of sequenceTable[i].seq) {
       findSubPattern(item)
     }
   }
-  c1 = c1.filter(el => el.sup >= sup)
+  //filter min support and build map
+  itemSet = itemSet
+    .filter(el => el.sup >= sup)
+    .map((el, idx) => {
+      Object.assign(el, { map: idx })
+      return el
+    })
+
+  for (let i = 0; i < sequenceTable.length; i++) {
+    sequenceTable[i].seq = sequenceTable[i].seq
+      .map(el => {
+        let newEl = []
+        for (const item of itemSet) {
+          if (isSubSet(item.element, el) >= 0) {
+            newEl.push(item.map)
+           }
+        }
+        return newEl
+      })
+      .filter(el => el.length > 0)
+  }
+  sequenceTable = sequenceTable.filter(el => el.seq.length > 0)
+  for (const i of sequenceTable) {
+    console.log(i)
+  }
 })
 .catch(err => console.log(err))

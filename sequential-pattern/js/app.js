@@ -5,6 +5,7 @@ let sup = parseFloat(process.argv[process.argv.indexOf('-s') + 1])
 
 let sequenceTable = []
 let itemSet = []
+let sequenceSet = []
 
 const parseLine = tran => {
   let rawData = tran.split(' ').filter(el => el !== '')
@@ -71,6 +72,38 @@ const findSubPattern = pattern => {
   }
 }
 
+//input = [
+//  {seq: array, sup: number}
+//]
+const generateNextLevelSeqSet = candSeqSet => {
+  if (candSeqSet.length == 0) {
+    return
+  }
+
+  let singleSet = []
+  let nextLevelSeqSet = []
+
+  //generate single set
+  for (const cand of candSeqSet) {
+    for (const s of cand.seq) {
+      if (singleSet.indexOf(s) < 0) {
+        singleSet.push(s)
+      }
+    }
+  }
+
+  //generate next level set by single set and cand seq set
+  for (let i = 0; i < candSeqSet.length; i++) {
+    for (let j = 0; j < singleSet.length; j++) {
+      if (candSeqSet[i].seq.indexOf(singleSet[j]) < 0) {
+        nextLevelSeqSet.push(candSeqSet[i].seq.concat(singleSet[j]))
+      }
+    }
+  }
+
+  console.log(nextLevelSeqSet)
+  //trim next level set
+}
 
 reader.createInterface({
   terminal: false,
@@ -87,6 +120,8 @@ reader.createInterface({
       findSubPattern(item)
     }
   }
+  sequenceSet.push(itemSet)
+
   //filter min support and build map
   itemSet = itemSet
     .filter(el => el.sup >= sup)
@@ -102,15 +137,15 @@ reader.createInterface({
         for (const item of itemSet) {
           if (isSubSet(item.element, el) >= 0) {
             newEl.push(item.map)
-           }
+          }
         }
         return newEl
       })
       .filter(el => el.length > 0)
   }
   sequenceTable = sequenceTable.filter(el => el.seq.length > 0)
-  for (const i of sequenceTable) {
-    console.log(i)
-  }
+  generateNextLevelSeqSet(itemSet.map(el => {
+    return { seq: [el.map], sup: 0 }
+  }))
 })
 .catch(err => console.log(err))

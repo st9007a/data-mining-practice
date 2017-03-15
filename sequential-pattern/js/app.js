@@ -4,7 +4,7 @@ const reader = require('readline-promise')
 let sup = parseFloat(process.argv[process.argv.indexOf('-s') + 1])
 
 const sequenceTable = []
-
+const c1 = []
 
 const parseLine = tran => {
   let rawData = tran.split(' ').filter(el => el !== '')
@@ -51,6 +51,27 @@ const isSameSet = (a, b) => {
   return a.length == b.length && a.every((el, i) => b[i] === el)
 }
 
+const findSubPattern = pattern => {
+  if (pattern.length == 0) {
+    return
+  }
+  let isExist = false
+  for (const c of c1) {
+    if (isSameSet(pattern, c.element)) {
+      c.sup++
+      isExist = true
+      break
+    }
+  }
+  if (!isExist) {
+    c1.push({ element: pattern, sup: 1 })
+  }
+  for (let i = 0; i < pattern.length; i++) {
+    findSubPattern(pattern.filter((el, idx) => i !== idx))
+  }
+}
+
+
 reader.createInterface({
   terminal: false,
   input: fs.createReadStream('input.txt')
@@ -59,23 +80,12 @@ reader.createInterface({
   sequenceTable.push(parseLine(line))
 })
 .then(count => {
-  const c1 = []
   sup *= count.lines
-  for (const s of sequenceTable) {
-    for (const item of s.seq) {
-      let isExist = false
-      for (const c of c1) {
-        if (isSameSet(c.element, item)) {
-          c.sup++
-          isExist = true
-          break
-        }
-      }
-      if (!isExist) {
-        c1.push({ element: item, sup: 1 })
-      }
+  for (let i = 0; i < sequenceTable.length; i++) {
+    for (const item of sequenceTable[i].seq) {
+      findSubPattern(item)
     }
   }
-  console.log(c1.filter(el => el.sup >= sup))
+  c1 = c1.filter(el => el.sup >= sup)
 })
 .catch(err => console.log(err))

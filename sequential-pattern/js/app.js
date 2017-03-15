@@ -52,6 +52,19 @@ const isSameSet = (a, b) => {
   return a.length == b.length && a.every((el, i) => b[i] === el)
 }
 
+const isSubSeq = (subSeq, superSeq) => {
+  let indexRecord = []
+  for (let i = 0; i < subSeq.length; i++) {
+    indexRecord.push(superSeq.indexOf(subSeq[i]))
+  }
+  for (let i = 0; i < indexRecord.length; i++) {
+    if (indexRecord[i] < 0 || (indexRecord[i + 1] && indexRecord[i] > indexRecord[i + 1])) {
+      return false
+    }
+  }
+  return true
+}
+
 const findSubPattern = pattern => {
   if (pattern.length == 0) {
     return
@@ -80,6 +93,7 @@ const generateNextLevelSeqSet = candSeqSet => {
     return
   }
 
+  let vote = candSeqSet[0].seq.length
   let singleSet = []
   let nextLevelSeqSet = []
 
@@ -96,13 +110,28 @@ const generateNextLevelSeqSet = candSeqSet => {
   for (let i = 0; i < candSeqSet.length; i++) {
     for (let j = 0; j < singleSet.length; j++) {
       if (candSeqSet[i].seq.indexOf(singleSet[j]) < 0) {
-        nextLevelSeqSet.push(candSeqSet[i].seq.concat(singleSet[j]))
+        nextLevelSeqSet.push({seq: candSeqSet[i].seq.concat(singleSet[j]), vote: 0})
       }
     }
   }
 
-  console.log(nextLevelSeqSet)
   //trim next level set
+  for (const next of nextLevelSeqSet) {
+    for (const cand of candSeqSet) {
+      if (isSubSeq(cand.seq, next.seq)) {
+        next.vote++
+      }
+    }
+  }
+  nextLevelSeqSet = nextLevelSeqSet
+    .filter(el => el.vote > vote)
+    .map(el => {
+      return { seq: el.seq, sup: 0 }
+    })
+
+  //find candidate
+  for (const next of nextLevelSeqSet) {
+  }
 }
 
 reader.createInterface({
@@ -144,6 +173,8 @@ reader.createInterface({
       .filter(el => el.length > 0)
   }
   sequenceTable = sequenceTable.filter(el => el.seq.length > 0)
+  console.log(sequenceTable)
+  return
   generateNextLevelSeqSet(itemSet.map(el => {
     return { seq: [el.map], sup: 0 }
   }))

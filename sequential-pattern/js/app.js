@@ -58,7 +58,7 @@ const isInDB = (subSeq, superSeq) => {
     let isExist = false
     for (let j = k; j < superSeq.length; j++) {
       if (superSeq[j].indexOf(subSeq[i]) >= 0) {
-        k++
+        k = j + 1
         isExist = true
         break
       }
@@ -70,6 +70,10 @@ const isInDB = (subSeq, superSeq) => {
   return true
 }
 
+// var a = [1,2,3]
+// var b = [[2,3], [1,5,6], [3,4], [2], [2,4,5], [9,3]]
+// console.log(isInDB(a, b))
+// process.exit()
 const isSubSeq = (subSeq, superSeq) => {
   let indexRecord = []
   for (let i = 0; i < subSeq.length; i++) {
@@ -103,6 +107,29 @@ const findSubPattern = pattern => {
   }
 }
 
+const writeSeqResult = seqSet => {
+  //map
+  for (let i = 0; i < seqSet.length; i++) {
+    seqSet[i].seq = seqSet[i].seq
+      .map(el => {
+        let newEl = itemSet
+          .filter(element => element.map == el)[0].element
+          .sort((a, b) => a - b)
+        newEl = newEl
+          .map((element, idx) => element === newEl[idx + 1] ? '' : element)
+          .filter(element => element !== '')
+        return newEl
+      })
+  }
+
+  for (const s of seqSet) {
+    for (const el of s.seq) {
+      fs.appendFileSync('output.txt', `(${el}) | `)
+    }
+    fs.appendFileSync('output.txt', `sup ${s.sup}\n`)
+  }
+}
+
 //input = [
 //  {seq: array, sup: number}
 //]
@@ -111,8 +138,8 @@ const generateNextLevelSeqSet = candSeqSet => {
     return
   }
 
-  console.log(candSeqSet)
-  return
+  // console.log(candSeqSet)
+  // return
   let vote = candSeqSet[0].seq.length
   let singleSet = []
   let nextLevelSeqSet = []
@@ -150,8 +177,17 @@ const generateNextLevelSeqSet = candSeqSet => {
     })
 
   //find candidate
-  for (const next of nextLevelSeqSet) {
+  for (let i = 0; i < nextLevelSeqSet.length; i++) {
+    for (let j = 0; j < sequenceTable.length; j++) {
+      if (isInDB(nextLevelSeqSet[i].seq, sequenceTable[j].seq)) {
+        nextLevelSeqSet[i].sup++
+      }
+    }
   }
+
+  nextLevelSeqSet = nextLevelSeqSet.filter(el => el.sup >= sup)
+  writeSeqResult(nextLevelSeqSet)
+  generateNextLevelSeqSet(nextLevelSeqSet)
 }
 
 reader.createInterface({
@@ -171,6 +207,7 @@ reader.createInterface({
   }
   sequenceSet.push(itemSet)
 
+  fs.writeFileSync('output.txt', '')
   //filter min support and build map
   itemSet = itemSet
     .filter(el => el.sup >= sup)

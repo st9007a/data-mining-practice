@@ -52,6 +52,24 @@ const isSameSet = (a, b) => {
   return a.length == b.length && a.every((el, i) => b[i] === el)
 }
 
+const isInDB = (subSeq, superSeq) => {
+  let k = 0
+  for (let i = 0; i < subSeq.length; i++) {
+    let isExist = false
+    for (let j = k; j < superSeq.length; j++) {
+      if (superSeq[j].indexOf(subSeq[i]) >= 0) {
+        k++
+        isExist = true
+        break
+      }
+    }
+    if (!isExist) {
+      return false
+    }
+  }
+  return true
+}
+
 const isSubSeq = (subSeq, superSeq) => {
   let indexRecord = []
   for (let i = 0; i < subSeq.length; i++) {
@@ -93,6 +111,8 @@ const generateNextLevelSeqSet = candSeqSet => {
     return
   }
 
+  console.log(candSeqSet)
+  return
   let vote = candSeqSet[0].seq.length
   let singleSet = []
   let nextLevelSeqSet = []
@@ -173,8 +193,6 @@ reader.createInterface({
       .filter(el => el.length > 0)
   }
   sequenceTable = sequenceTable.filter(el => el.seq.length > 0)
-  console.log(sequenceTable)
-  return
   generateNextLevelSeqSet(itemSet.map(el => {
     return { seq: [el.map], sup: 0 }
   }))

@@ -135,14 +135,15 @@ const writeSeqResult = seqSet => {
 //]
 const generateNextLevelSeqSet = candSeqSet => {
   if (candSeqSet.length == 0) {
+    console.log(`End: ${new Date()}`)
     return
   }
 
-  // console.log(candSeqSet)
-  // return
   let vote = candSeqSet[0].seq.length
   let singleSet = []
   let nextLevelSeqSet = []
+
+  console.log(`find level ${vote + 1} sequence`)
 
   //generate single set
   for (const cand of candSeqSet) {
@@ -186,10 +187,12 @@ const generateNextLevelSeqSet = candSeqSet => {
   }
 
   nextLevelSeqSet = nextLevelSeqSet.filter(el => el.sup >= sup)
+  console.log('write to output file')
   writeSeqResult(nextLevelSeqSet)
   generateNextLevelSeqSet(nextLevelSeqSet)
 }
 
+console.log(`Start: ${new Date()}`)
 reader.createInterface({
   terminal: false,
   input: fs.createReadStream('input.txt')
@@ -200,6 +203,7 @@ reader.createInterface({
 .then(count => {
   sup *= count.lines
   //find item set
+  console.log('build sequence table')
   for (let i = 0; i < sequenceTable.length; i++) {
     for (const item of sequenceTable[i].seq) {
       findSubPattern(item)
@@ -209,6 +213,7 @@ reader.createInterface({
 
   fs.writeFileSync('output.txt', '')
   //filter min support and build map
+  console.log('find level 1 sequence')
   itemSet = itemSet
     .filter(el => el.sup >= sup)
     .map((el, idx) => {
@@ -216,6 +221,7 @@ reader.createInterface({
       return el
     })
 
+  console.log('map new element id to sequence table')
   for (let i = 0; i < sequenceTable.length; i++) {
     sequenceTable[i].seq = sequenceTable[i].seq
       .map(el => {
@@ -229,6 +235,11 @@ reader.createInterface({
       })
       .filter(el => el.length > 0)
   }
+
+  for (let i = 0; i < itemSet.length; i++) {
+    fs.appendFileSync('output.txt', `(${itemSet[i].element}) | sup ${itemSet[i].sup}\n`)
+  }
+
   sequenceTable = sequenceTable.filter(el => el.seq.length > 0)
   generateNextLevelSeqSet(itemSet.map(el => {
     return { seq: [el.map], sup: 0 }

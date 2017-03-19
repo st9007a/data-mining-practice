@@ -71,8 +71,6 @@ def get_entropy(rows, target_field):
     return entropy
 
 def get_max_info_gain(rows, target_field, exclude_fields):
-    if len(rows) == 0:
-        return None
     result = { 'info_gain': 0, 'field': '' }
     for field in rows[0]:
         if field == target_field or field in exclude_fields:
@@ -84,7 +82,7 @@ def get_max_info_gain(rows, target_field, exclude_fields):
             rows_have_ans = [elem for elem in rows if elem[field] == ans]
             ans_entropy = get_entropy(rows_have_ans, target_field)
             info_gain -= ans_entropy * len(rows_have_ans) / float(len(rows))
-        if info_gain > result['info_gain']:
+        if info_gain >= result['info_gain']:
             result['info_gain'] = info_gain
             result['field'] = field
     return result
@@ -97,7 +95,6 @@ def build_d_tree(node, target_field, cond):
         return node
     field = get_max_info_gain(rows_by_cond, target_field, cond)['field']
     node.set_field_name = field
-    # find field answer
     field_ans = set([elem[field] for elem in rows_by_cond])
     for ans in field_ans:
         cond[field] = ans

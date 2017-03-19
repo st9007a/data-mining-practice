@@ -37,13 +37,12 @@ class Database:
         return self.db[index][field] if field in self.db[index] else 'unknown'
 
     def get_rows_by_cond(self, cond):
-        rows = []
-        for elem in self.db:
-            if set(cond.keys()) <= set(elem.keys()) and set(cond.items()) <= set(elem.items()):
-                print(elem)
+        return [elem for elem in self.db
+                if set(cond.keys()) <= set(elem.keys()) and set(cond.items()) <= set(elem.items())]
 
-
-    # def get_max_info_gain_ratio(self, cond):
+    def get_max_info_gain_ratio(self, cond):
+        cond_rows = self.get_rows_by_cond(cond)
+        print(cond_rows)
 
 class DesicionTreeNode:
 
@@ -66,7 +65,7 @@ def main():
         raw_data = [elem.rstrip('\n') for elem in f.readlines()]
         db = Database(raw_data)
 
-    db.get_rows_by_cond({'4': '60000', '2': 'Basic'})
+    db.get_max_info_gain_ratio({})
 
 if __name__ == '__main__':
     main()

@@ -1,5 +1,6 @@
 training_file_name = 'training.txt'
 test_file_name = 'test.txt'
+ans_field = '2'
 db = None
 
 class Database:
@@ -18,7 +19,6 @@ class Database:
             if '2' not in row:
                 row['2'] = 'Basic'
             self.db.append(row)
-
         for elem in self.db:
             for field in self.fields:
                 if field not in elem:
@@ -40,9 +40,11 @@ class Database:
         return [elem for elem in self.db
                 if set(cond.keys()) <= set(elem.keys()) and set(cond.items()) <= set(elem.items())]
 
-    def get_max_info_gain_ratio(self, cond):
+    def get_max_info_gain_ratio(self, cond, target_field):
         cond_rows = self.get_rows_by_cond(cond)
-        print(cond_rows)
+        target_field_cond = set([elem[target_field] for elem in cond_rows])
+        for ans in target_field_cond:
+            count = len([elem for elem in cond_rows if elem[target_field] == ans])
 
 class DesicionTreeNode:
 
@@ -65,7 +67,7 @@ def main():
         raw_data = [elem.rstrip('\n') for elem in f.readlines()]
         db = Database(raw_data)
 
-    db.get_max_info_gain_ratio({})
+    db.get_max_info_gain_ratio({}, ans_field)
 
 if __name__ == '__main__':
     main()

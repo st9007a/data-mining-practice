@@ -3,6 +3,8 @@ import  math
 training_file_name = 'training.txt'
 test_file_name = 'test.txt'
 ans_field = '2'
+
+global db
 db = None
 
 class Database:
@@ -34,6 +36,7 @@ class DesicionTreeNode:
 
     def __init__(self):
         self.children_node = {}
+        self.answer = None
 
     def add_child(self, ans, node):
         if ans not in self.children_node:
@@ -41,6 +44,9 @@ class DesicionTreeNode:
 
     def set_field_name(self, field_name):
         self.field_name = field_name
+
+    def set_ans(self, ans):
+        self.answer = ans
 
     def get_child(self, ans):
         return self.children_node[ans] if ans in self.children_node else None
@@ -83,14 +89,29 @@ def get_max_info_gain(rows, target_field, exclude_fields):
             result['field'] = field
     return result
 
-def build_d_tree(node, db, cond):
+def build_d_tree(node, target_field, cond):
+    global db
+    rows_by_cond = db.get_rows_by_cond(cond)
+    if len(list(set([elem[target_field] for elem in rows_by_cond]))) == 1:
+        node.set_answer(rows_by_cond[0][target_field])
+        return node
+    field = get_max_info_gain(rows_by_cond, target_field, cond)['field']
+    node.set_field_name = field
+    # find field answer
+    field_ans = set([elem[field] for elem in rows_by_cond])
+    for ans in field_ans:
+        cond[field] = ans
+        node.add_child(build_d_tree(DesicionTreeNode(), target_field, cond))
+    return node
 
 def main():
 
     with open(training_file_name) as f:
         raw_data = [elem.rstrip('\n') for elem in f.readlines()]
+        global db
         db = Database(raw_data)
-    field = db.get_rows_by_cond({})
+    d_tree = DesicionTreeNode()
+    d_tree = build_d_tree(d_tree, ans_field, {})
 
 if __name__ == '__main__':
     main()

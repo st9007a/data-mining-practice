@@ -1,3 +1,5 @@
+import  math
+
 training_file_name = 'training.txt'
 test_file_name = 'test.txt'
 ans_field = '2'
@@ -43,8 +45,10 @@ class Database:
     def get_max_info_gain_ratio(self, cond, target_field):
         cond_rows = self.get_rows_by_cond(cond)
         target_field_cond = set([elem[target_field] for elem in cond_rows])
+        total_entropy = 0
         for ans in target_field_cond:
             count = len([elem for elem in cond_rows if elem[target_field] == ans])
+            total_entropy -= (count / float(len(cond_rows))) * (math.log(count, 2) - math.log(len(cond_rows), 2))
 
 class DesicionTreeNode:
 

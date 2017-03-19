@@ -32,11 +32,15 @@ class Database:
         return [elem for elem in self.db
                 if set(cond.keys()) <= set(elem.keys()) and set(cond.items()) <= set(elem.items())]
 
+    def get_fields(self):
+        return self.fields
+
 class DesicionTreeNode:
 
     def __init__(self):
         self.children_node = {}
-        self.answer = None
+        self.answer = {}
+        self.is_answer = False
 
     def add_child(self, ans, node):
         if ans not in self.children_node:
@@ -45,14 +49,15 @@ class DesicionTreeNode:
     def set_field_name(self, field_name):
         self.field_name = field_name
 
-    def set_ans(self, ans):
-        self.answer = ans
+    def set_answer(self, ans, percent):
+        self.answer[ans] = percent
+        self.is_answer = True
 
     def get_child(self, ans):
         return self.children_node[ans] if ans in self.children_node else None
 
     def get_name(self):
-        return self.field
+        return self.field_name
 
 def filter_by_cond(rows, cond):
     return [elem for elem in rows
@@ -89,17 +94,15 @@ def get_max_info_gain(rows, target_field, exclude_fields):
 
 def build_d_tree(node, target_field, cond):
     global db
-    rows_by_cond = db.get_rows_by_cond(cond)
-    if len(list(set([elem[target_field] for elem in rows_by_cond]))) == 1:
-        node.set_answer(rows_by_cond[0][target_field])
+    rows = db.get_rows_by_cond(cond)
+    if len(cond.keys()) + 1 == len(db.get_fields()):
+        target_field_ans = set([elem[target_field] for elem in rows])
+        for ans in target_field_ans:
+            node.set_answer(ans, len([elem for elem in rows if elem[target_field] == ans]) / float(len(rows)))
         return node
-    field = get_max_info_gain(rows_by_cond, target_field, cond)['field']
-    node.set_field_name = field
-    field_ans = set([elem[field] for elem in rows_by_cond])
-    for ans in field_ans:
-        cond[field] = ans
-        node.add_child(build_d_tree(DesicionTreeNode(), target_field, cond))
-    return node
+    elif len(set([elem[target_field] for elem in rows])) == 1:
+        node.set_answer(rows[0][target_field], 1)
+        return node
 
 def main():
 
@@ -108,7 +111,6 @@ def main():
         global db
         db = Database(raw_data)
     d_tree = DesicionTreeNode()
-    d_tree = build_d_tree(d_tree, ans_field, {})
 
 if __name__ == '__main__':
     main()

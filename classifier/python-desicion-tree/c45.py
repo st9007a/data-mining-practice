@@ -2,6 +2,7 @@ import  math
 
 training_file_name = 'training.txt'
 test_file_name = 'test.txt'
+output_file_name = 'output.txt'
 ans_field = '2'
 
 global db
@@ -81,6 +82,9 @@ class DesicionTreeNode:
     def get_answer(self):
         return self.answer
 
+    def get_field_answer(self):
+        return self.children_node.keys()
+
 def get_entropy(rows, target_field):
     entropy = 0
     ans = {}
@@ -133,25 +137,50 @@ def build_d_tree(node, target_field, cond):
 def match_d_tree(node, data):
     if node.chk_is_answer():
         return node.get_answer()
+    if node.get_child(data[node.get_field_name()]) == None:
+        return None
     return match_d_tree(node.get_child(data[node.get_field_name()]), data)
+
+def tree_info(node):
+    if node.chk_is_answer():
+        print 'answer: ' + str(node.get_answer())
+        return
+    print 'field: ' + node.get_field_name()
+    for ans in node.get_field_answer():
+        print 'ans: ' + ans
+        tree_info(node.get_child(ans))
 
 def main():
 
     print 'read training data ...'
-    with open(training_file_name) as f:
-        raw_data = [elem.rstrip('\n') for elem in f.readlines()]
+    with open(training_file_name) as training_file:
+        raw_data = [elem.rstrip('\n') for elem in training_file.readlines()]
         global db
         db = Database(raw_data)
 
-    print 'build tree model ..,'
+    print 'build tree model ...'
     d_tree = DesicionTreeNode()
     d_tree = build_d_tree(d_tree, ans_field, {})
 
-    with open(test_file_name) as f:
-        raw_data = [elem.rstrip('\n') for elem in f.readlines()]
+    # tree_info(d_tree)
+    with open(test_file_name) as test_file, open(output_file_name, 'w+') as output_file:
+        raw_data = [elem.rstrip('\n') for elem in test_file.readlines()]
         test_db = Database(raw_data)
         for data in test_db:
-            print(match_d_tree(d_tree, data))
+            result = match_d_tree(d_tree, data)
+            output_str = '{'
+            for attr in data:
+                if data[attr] == 'unknown':
+                    continue
+                output_str += attr + ' ' + data[attr] + ','
+            output_str += '} member_card = '
+            if result != None:
+                for res in result:
+                    output_str += res + ': ' + str(result[res] * 100) + '%,'
+            else:
+                output_str += 'unknown'
+            output_str += '\n'
+            output_file.write(output_str)
 
 if __name__ == '__main__':
     main()

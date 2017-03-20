@@ -10,6 +10,7 @@ db = None
 class Database:
 
     def __init__(self, raw_data_list):
+        self.iterator_pointer = 0
         self.db = []
         self.fields = set()
         self.data_list = raw_data_list
@@ -35,12 +36,27 @@ class Database:
     def get_fields(self):
         return self.fields
 
+    def get_row(self, index):
+        if index >= len(self.db) or index < 0:
+            return None
+        return self.db[index]
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        if self.iterator_pointer >= len(self.db):
+            raise StopIteration
+        self.iterator_pointer += 1
+        return self.db[self.iterator_pointer - 1]
+
 class DesicionTreeNode:
 
     def __init__(self):
         self.children_node = {}
         self.answer = {}
         self.is_answer = False
+        self.field_name = ''
 
     def add_child(self, ans, node):
         if ans not in self.children_node:
@@ -56,8 +72,14 @@ class DesicionTreeNode:
     def get_child(self, ans):
         return self.children_node[ans] if ans in self.children_node else None
 
-    def get_name(self):
+    def get_field_name(self):
         return self.field_name
+
+    def chk_is_answer(self):
+        return self.is_answer
+
+    def get_answer(self):
+        return self.answer
 
 def get_entropy(rows, target_field):
     entropy = 0
@@ -102,20 +124,34 @@ def build_d_tree(node, target_field, cond):
     field = get_max_info_gain(rows, target_field, cond)['field']
     node.set_field_name(field)
     field_ans = set([elem[field] for elem in rows])
-    cond[field] = ''
+    new_cond = dict(cond)
     for ans in field_ans:
-        cond[field] = ans
-        node.add_child(ans, build_d_tree(DesicionTreeNode(), target_field, cond))
+        new_cond[field] = ans
+        node.add_child(ans, build_d_tree(DesicionTreeNode(), target_field, new_cond))
     return node
+
+def match_d_tree(node, data):
+    if node.chk_is_answer():
+        return node.get_answer()
+    return match_d_tree(node.get_child(data[node.get_field_name()]), data)
 
 def main():
 
+    print 'read training data ...'
     with open(training_file_name) as f:
         raw_data = [elem.rstrip('\n') for elem in f.readlines()]
         global db
         db = Database(raw_data)
+
+    print 'build tree model ..,'
     d_tree = DesicionTreeNode()
     d_tree = build_d_tree(d_tree, ans_field, {})
+
+    with open(test_file_name) as f:
+        raw_data = [elem.rstrip('\n') for elem in f.readlines()]
+        test_db = Database(raw_data)
+        for data in test_db:
+            print(match_d_tree(d_tree, data))
 
 if __name__ == '__main__':
     main()

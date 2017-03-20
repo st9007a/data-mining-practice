@@ -35,11 +35,6 @@ class Database:
     def parse_age(self, age):
         return str(int(age) / 10)
 
-    # def get_middle_of_field(self, field):
-    #     data_list = [elem[field] for elem in self.db if elem.has_key(field)]
-    #     data_list.sort()
-    #     return str(data_list[len(data_list) / 2])
-
     def get_rows_by_cond(self, cond):
         return [elem for elem in self.db
                 if set(cond.keys()) <= set(elem.keys()) and set(cond.items()) <= set(elem.items())]

@@ -24,11 +24,21 @@ class Database:
                 self.fields.add(key)
             if '2' not in row:
                 row['2'] = 'Basic'
+            if '3' in row:
+                row['3'] = self.parse_age(row['3'])
             self.db.append(row)
         for elem in self.db:
             for field in self.fields:
                 if field not in elem:
                     elem[field] = 'unknown'
+
+    def parse_age(self, age):
+        return str(int(age) / 10)
+
+    # def get_middle_of_field(self, field):
+    #     data_list = [elem[field] for elem in self.db if elem.has_key(field)]
+    #     data_list.sort()
+    #     return str(data_list[len(data_list) / 2])
 
     def get_rows_by_cond(self, cond):
         return [elem for elem in self.db
@@ -163,23 +173,23 @@ def main():
     d_tree = build_d_tree(d_tree, ans_field, {})
 
     # tree_info(d_tree)
+    print 'run test data ...'
     with open(test_file_name) as test_file, open(output_file_name, 'w+') as output_file:
         raw_data = [elem.rstrip('\n') for elem in test_file.readlines()]
         test_db = Database(raw_data)
+        i = 0
         for data in test_db:
             result = match_d_tree(d_tree, data)
-            output_str = '{'
-            for attr in data:
-                if data[attr] == 'unknown':
-                    continue
-                output_str += attr + ' ' + data[attr] + ','
-            output_str += '} member_card = '
+            output_str = raw_data[i]
+            output_str += ' member_card = '
             if result != None:
                 for res in result:
                     output_str += res + ': ' + str(result[res] * 100) + '%,'
             else:
                 output_str += 'unknown'
             output_str += '\n'
+            # print output_str
+            i += 1
             output_file.write(output_str)
 
 if __name__ == '__main__':

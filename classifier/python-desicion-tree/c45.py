@@ -59,10 +59,6 @@ class DesicionTreeNode:
     def get_name(self):
         return self.field_name
 
-def filter_by_cond(rows, cond):
-    return [elem for elem in rows
-            if set(cond.keys()) <= set(elem.keys()) and set(cond.items()) <= set(elem.items())]
-
 def get_entropy(rows, target_field):
     entropy = 0
     ans = {}
@@ -103,6 +99,14 @@ def build_d_tree(node, target_field, cond):
     elif len(set([elem[target_field] for elem in rows])) == 1:
         node.set_answer(rows[0][target_field], 1)
         return node
+    field = get_max_info_gain(rows, target_field, cond)['field']
+    node.set_field_name(field)
+    field_ans = set([elem[field] for elem in rows])
+    cond[field] = ''
+    for ans in field_ans:
+        cond[field] = ans
+        node.add_child(ans, build_d_tree(DesicionTreeNode(), target_field, cond))
+    return node
 
 def main():
 
@@ -111,6 +115,7 @@ def main():
         global db
         db = Database(raw_data)
     d_tree = DesicionTreeNode()
+    d_tree = build_d_tree(d_tree, ans_field, {})
 
 if __name__ == '__main__':
     main()

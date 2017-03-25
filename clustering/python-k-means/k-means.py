@@ -6,6 +6,7 @@ from argparse import ArgumentParser
 class Cluster:
 
     def __init__(self, data_list):
+        self.iterator_pointer = 0
         self.center = []
         self.data_list = data_list
 
@@ -16,8 +17,6 @@ class Cluster:
         self.find_nearest_center()
         while self.calc_new_center() == False:
             self.find_nearest_center()
-        print self.data_list
-
 
     def find_nearest_center(self):
         for coordinate in self.data_list:
@@ -54,19 +53,32 @@ class Cluster:
                 return False
         return True
 
+    def __iter__(self):
+        return self
+
+    def next(self):
+        if self.iterator_pointer >= len(self.data_list):
+            raise StopIteration
+        self.iterator_pointer += 1
+        return self.data_list[self.iterator_pointer - 1]
 
 
 def main():
 
     input_file = None
+    count = 5
     parser = ArgumentParser()
 
-    parser.add_argument('--file', '-f', help = 'input the file name you want to clustering')
+    parser.add_argument('--file', '-f', help = 'Input the file name you want to clustering')
+    parser.add_argument('--cluster', '-c', help = 'Count of cluster. Default is 5')
     args = parser.parse_args()
 
     if args.file is None:
         print 'Not input file.'
         sys.exit(0)
+
+    if args.cluster is not None:
+        count = int(args.cluster)
 
     try:
         input_file = open(args.file, 'r')
@@ -83,7 +95,11 @@ def main():
         data_list.append({ 'x': float(x), 'y': float(y) , 'group': 0 })
 
     cluster = Cluster(data_list)
-    cluster.cluster(5)
+    cluster.cluster(count)
+
+    with open(args.file + '-output.txt', 'w+') as output_file:
+        for data in cluster:
+            output_file.write(str(data['x']) + ' ' + str(data['y']) + ' ' + str(data['group']) + '\n')
 
 
 if __name__ == '__main__':

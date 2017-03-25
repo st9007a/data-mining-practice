@@ -11,12 +11,12 @@ class Cluster:
 
     def cluster(self, num):
         for i in range(num):
-            self.data_list[i]['group'] = i + 1
+            self.data_list[i]['group'] = i
             self.center.append(self.data_list[i])
-        # print self.data_list[0]
-        self.find_center()
+        self.find_nearest_center()
+        self.calc_new_center()
 
-    def find_center(self):
+    def find_nearest_center(self):
         for coordinate in self.data_list:
             distance = ()
             center = None
@@ -26,7 +26,23 @@ class Cluster:
                     distance = new_distance
                     center = g['group']
             coordinate['group'] = center
-        print self.data_list
+        # print self.data_list
+
+    def calc_new_center(self):
+        record = []
+        new_center = []
+        for i in range(len(self.center)):
+            record.append({'count': 0, 'xsum': 0, 'ysum': 0})
+        for coordinate in self.data_list:
+            record[coordinate['group']]['xsum'] += coordinate['x']
+            record[coordinate['group']]['ysum'] += coordinate['y']
+            record[coordinate['group']]['count'] += 1
+
+        idx = 0
+        for sum in record:
+            new_center.append({'x': sum['xsum'] / float(sum['count']), 'y': sum['ysum'] / float(sum['count']), 'group': idx})
+            idx += 1
+        print new_center
 
 def main():
 

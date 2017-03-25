@@ -14,7 +14,10 @@ class Cluster:
             self.data_list[i]['group'] = i
             self.center.append(self.data_list[i])
         self.find_nearest_center()
-        self.calc_new_center()
+        while self.calc_new_center() == False:
+            self.find_nearest_center()
+        print self.data_list
+
 
     def find_nearest_center(self):
         for coordinate in self.data_list:
@@ -26,7 +29,6 @@ class Cluster:
                     distance = new_distance
                     center = g['group']
             coordinate['group'] = center
-        # print self.data_list
 
     def calc_new_center(self):
         record = []
@@ -42,7 +44,17 @@ class Cluster:
         for sum in record:
             new_center.append({'x': sum['xsum'] / float(sum['count']), 'y': sum['ysum'] / float(sum['count']), 'group': idx})
             idx += 1
-        print new_center
+        is_continue = self.shift(new_center)
+        self.center = new_center
+        return is_continue
+
+    def shift(self, new_center):
+        for i in range(len(self.center)):
+            if math.sqrt(math.pow(self.center[i]['x'] - new_center[i]['x'], 2) + math.pow(self.center[i]['y'] - new_center[i]['y'], 2)) > 0.001:
+                return False
+        return True
+
+
 
 def main():
 

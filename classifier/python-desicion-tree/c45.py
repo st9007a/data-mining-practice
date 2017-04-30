@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import  math
 
 training_file_name = 'training.txt'

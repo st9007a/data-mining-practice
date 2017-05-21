@@ -4,6 +4,7 @@ const twit = require('twit')
 
 const parser = new ArgumentParser({
   addHelp: true,
+  description: 'Default mining sample tweets.',
   version: '0.0.1',
 })
 const t = new twit(require('./config.json'))
@@ -16,7 +17,7 @@ const args = parser.parseArgs()
 if (!args.filter) {
   twitStream.on('tweet', (tweet) => {
     console.log(tweet)
-    fs.appendFileSync('tweets.txt', JSON.stringify(tweet) + '\n', 'utf-8')
+    fs.appendFileSync('sample.tweets.txt', JSON.stringify(tweet) + '\n', 'utf-8')
   })
 }
 else {

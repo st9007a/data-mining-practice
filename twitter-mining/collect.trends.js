@@ -12,4 +12,4 @@ const getTrends = () => t.get('trends/place', {id: 1}, (err, chunk, res) => {
 })
 
 getTrends()
-setInterval(() => getTrends(), 1000 * 60 * 10)
+setInterval(() => getTrends(), 1000 * 60 * 5)
